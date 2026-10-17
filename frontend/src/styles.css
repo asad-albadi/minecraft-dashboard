@@ -232,3 +232,19 @@ aside{min-height:calc(100vh - 43px)}
 .hero-status small{color:#c5cdd0;font:12px Oxanium,monospace;letter-spacing:.2px}
 @media (min-width:1024px){.shell{height:auto;min-height:calc(100vh - 43px)}aside{min-height:calc(100vh - 43px)}}
 @media (max-width:767px){.server-identity{left:14px;bottom:14px;max-width:calc(100% - 28px);padding:10px 14px 10px 10px}.server-identity strong{font-size:12px;white-space:normal}.server-identity strong span{display:block}.server-identity strong span+span:before{content:none}.hero-status{gap:5px;font-size:9px}.hero-status b{font-size:10px}.hero-status small{font-size:11px}.hero-status .dashboard-icon{width:20px;height:20px}}
+
+/* The desktop board is a fixed canvas; console/chat messages scroll inside their own panel. */
+@media (min-width:1024px){
+  html,body{height:100%;overflow:hidden}
+  .app{height:100vh;min-height:0;overflow:hidden}
+  .shell{height:calc(100vh - 43px);min-height:0;overflow:hidden}
+  aside,.main-grid,.center,.rail{height:100%;min-height:0;overflow:hidden}
+  .lower{flex:1;height:auto;min-height:0;overflow:hidden}
+  .lower>.stone-panel{height:100%;min-height:0;overflow:hidden}
+  .rail{grid-template-rows:350px minmax(0,1fr);align-content:stretch}
+  .console{display:flex;min-height:0;overflow:hidden}
+  .console .log{height:auto;min-height:0;max-height:none;flex:1;overflow:auto}
+}
+@media (min-width:1024px) and (max-height:820px){
+  .rail{grid-template-rows:210px minmax(0,1fr)}
+}

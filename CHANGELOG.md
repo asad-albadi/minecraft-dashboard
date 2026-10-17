@@ -19,6 +19,7 @@ All notable changes to this project are recorded here.
 
 ### Fixed
 
+- Restored the fixed desktop dashboard canvas; console and chat histories now scroll only within the server-console panel.
 - Anchored the overview hero identity to its bottom-left corner and kept the server name on one desktop line.
 - Removed the standalone page header and centered the server name, online state, and verified Java version inside the overview hero card.
 - Enlarged square KPI icons to fill their available card height and corrected the Players Online crop so its full three-player illustration and right stone frame are visible.
