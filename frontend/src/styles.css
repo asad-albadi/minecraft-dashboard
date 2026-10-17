@@ -161,3 +161,47 @@ nav button:nth-child(6) .pixel-icon:before{left:8px;top:8px;width:14px;height:14
   .player{min-height:62px;margin-block:7px}
   .console .log{height:auto;min-height:0;max-height:none;flex:1}
 }
+
+/* Exact, labelled tiles cropped from the supplied dashboard icon sheet. */
+.dashboard-icon{display:block;flex:none;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(2px 2px 0 #050707)}
+.grass-logo{display:grid;place-items:center;padding:0;overflow:hidden}
+.grass-logo:before{display:none}
+.grass-logo .dashboard-icon{width:70px;height:70px}
+nav button .dashboard-icon{width:40px;height:40px}
+.stone-panel h2>.dashboard-icon{width:27px;height:27px;margin:-5px 0}
+.kpi>.dashboard-icon{width:54px;height:54px;margin:0;flex:none}
+.info-list>.info-list>div{grid-template-columns:28px 1fr auto}
+.info-list>div>.dashboard-icon{width:22px;height:22px}
+.weather-box>.dashboard-icon{width:46px;height:46px}
+.quick .pixel-button{display:flex;align-items:center;justify-content:center;gap:8px}
+.quick .pixel-button>.dashboard-icon{width:23px;height:23px}
+.tabs span{display:flex;align-items:center;gap:4px}
+.tabs span>.dashboard-icon{width:18px;height:18px}
+
+/* Panels must reflow on shorter desktops; no viewport-height clipping. */
+@media (min-width:1024px){
+  body{overflow:auto}
+  .app{height:auto;min-height:100vh;overflow-x:hidden;overflow-y:visible}
+  .shell,.main-grid{height:auto;min-height:0;overflow:visible}
+  aside{height:auto;min-height:calc(100vh - 169px);overflow:hidden}
+  .rail{height:auto;min-height:0;overflow:visible;grid-template-rows:auto auto}
+  .lower{height:auto;min-height:345px;overflow:visible}
+  .lower>.stone-panel{height:345px;min-height:345px;overflow:hidden}
+  .console{min-height:360px}
+  .console .log{min-height:215px;flex:none}
+}
+@media (min-width:1440px){
+  .shell,.main-grid{height:auto;min-height:0}
+  .rail{height:auto;grid-template-rows:auto auto;overflow:visible}
+  .lower{height:auto;min-height:345px;overflow:visible}
+}
+@media (max-width:1023px){
+  .grass-logo .dashboard-icon{width:52px;height:52px}
+  nav button .dashboard-icon{width:36px;height:36px}
+}
+@media (max-width:767px){
+  .grass-logo .dashboard-icon{width:40px;height:40px}
+  nav button .dashboard-icon{width:32px;height:32px}
+  .stone-panel h2>.dashboard-icon{width:23px;height:23px}
+  .kpi>.dashboard-icon{width:42px;height:42px}
+}

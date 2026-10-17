@@ -6,6 +6,7 @@ All notable changes to this project are recorded here.
 
 ### Added
 
+- Replaced the generated dashboard icon sheet with individually cropped, role-mapped tiles from the supplied labeled icon artwork across navigation, live-status/console headings, stats, world metadata, weather, and quick actions.
 - Added a read-only Players view sourced from live vanilla player cache, operator, and world-stat files, with play time, deaths, distance walked, mob kills, operator marker, and skin heads.
 - Added first-seen, last-seen, and join-event data to player cards by scanning the retained vanilla log history read-only.
 - Replaced generic KPI glyph boxes with compact player, grass-block, crossed-tool, and difficulty indicators; refined the original pixel wordmark with a stone/iron texture.
@@ -16,6 +17,7 @@ All notable changes to this project are recorded here.
 
 ### Fixed
 
+- Allowed the lower dashboard row to grow for all quick actions instead of clipping the final controls on shorter desktop canvases.
 - Contained the desktop dashboard canvas within the viewport; only the server-console log now scrolls when content exceeds its panel.
 - Added dark carved-stone texture to unused desktop canvas space.
 - Added a read-only Server-Sent Events (SSE) stream for live server status and sanitized console-log additions, with automatic browser reconnection.
