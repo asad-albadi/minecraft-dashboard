@@ -16,6 +16,10 @@ In development, run the Go backend on port 8080 and Vite proxies `/api` requests
 
 The dashboard Compose stack joins the existing external `minecraft_default` Docker network so the backend can use the Minecraft service alias `mc` and its private RCON port. Confirm the Minecraft stack is running and that the network exists with `docker network inspect minecraft_default`. Do not publish port `25575` to the host or internet.
 
+## World fields are unavailable
+
+Set both `MINECRAFT_WORLD_PATH` and `MINECRAFT_PROPERTIES_PATH` in the ignored `.env` file to the existing host paths. Compose mounts them read-only inside the dashboard container; it never changes the world files. The seed is intentionally masked by default.
+
 ## Docker Compose reports missing or empty configuration
 
 Copy `.env.example` to `.env`, fill only the integrations you have explicitly approved, and keep it outside version control. Blank optional settings are valid; they disable the matching capability safely.
