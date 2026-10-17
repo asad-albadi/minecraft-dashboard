@@ -16,6 +16,9 @@ services:
     # Configure only read-only source mounts. Do not mount Docker's socket here.
     volumes:
       - dashboard-data:/var/lib/minecraft-dashboard
+      - ${MINECRAFT_LOG_PATH:-/dev/null}:/minecraft/logs/latest.log:ro
+      - ${MINECRAFT_WORLD_PATH:-/dev/null}:/minecraft/world:ro
+    networks: [default, minecraft]
   dashboard-frontend:
     build: ./frontend
     ports:
@@ -23,3 +26,7 @@ services:
     depends_on: [dashboard-backend]
 volumes:
   dashboard-data:
+networks:
+  minecraft:
+    external: true
+    name: minecraft_default

@@ -7,6 +7,7 @@ All notable changes to this project are recorded here.
 ### Added
 
 - Original cinematic voxel hero-valley and cliffside-cottage artwork, integrated into the dashboard’s hero and decorative sidebar.
+- Configured the local dashboard environment with existing Minecraft read-only log/world paths and private network discovery.
 - Bun/Vite/React pixel-themed dashboard shell matching the supplied desktop composition and adapting for tablet/mobile.
 - Go/Fiber API skeleton with health, capability, read-only placeholder data, and safety-gated mutation routes.
 - Safe Minecraft `tellraw` JSON command construction with tests for escaping and control-character rejection.
@@ -15,5 +16,6 @@ All notable changes to this project are recorded here.
 
 ### Security
 
+- Disabled all mutating controls while the dashboard has only read-only RCON integration.
 - Server management capabilities remain disabled until explicit private integration settings are provided.
 - No Minecraft server volume, player data, RCON secret, or Docker socket is included in deployment defaults.
