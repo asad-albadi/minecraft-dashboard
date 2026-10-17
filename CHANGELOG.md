@@ -19,6 +19,7 @@ All notable changes to this project are recorded here.
 
 ### Fixed
 
+- Enlarged square KPI icons to fill their available card height and corrected the Players Online crop so its full three-player illustration and right stone frame are visible.
 - Rebuilt the deployed Compose frontend so the browser now serves the current tile-based icon UI instead of a stale pre-rebuild bundle.
 - Normalized all exported dashboard icon tiles to a 174×174 canvas and corrected shifted action-tile crops that included neighboring artwork.
 - Allowed the lower dashboard row to grow for all quick actions instead of clipping the final controls on shorter desktop canvases.
