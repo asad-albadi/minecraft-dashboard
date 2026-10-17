@@ -6,7 +6,13 @@ All notable changes to this project are recorded here.
 
 ### Added
 
+- Added the verified Minecraft server version from the read-only startup log to the online status badge.
 - Added per-player Minecraft skin-head rendering from the public player name, with an in-dashboard pixel-face fallback when the image is unavailable.
+
+### Fixed
+
+- Contained the desktop dashboard canvas within the viewport; only the server-console log now scrolls when content exceeds its panel.
+- Added dark carved-stone texture to unused desktop canvas space.
 - Added a read-only Server-Sent Events (SSE) stream for live server status and sanitized console-log additions, with automatic browser reconnection.
 - Original cinematic voxel hero-valley and cliffside-cottage artwork, integrated into the dashboard’s hero and decorative sidebar.
 - Configured the local dashboard environment with existing Minecraft read-only log/world paths and private network discovery.

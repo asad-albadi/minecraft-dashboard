@@ -12,4 +12,8 @@
 
 The browser renders an online player's public skin head from their public Minecraft name and sends no RCON credential or local player-data request to that image service. A CSS pixel-face remains beneath the image as a fallback for offline, missing, or blocked portraits.
 
+## Server version
+
+The online status badge reports the latest version found in a vanilla `Starting minecraft server version …` startup-log line. This is read from the existing read-only log mount; it does not require a mutating RCON command or access to Minecraft data volumes.
+
 Keep detailed architecture, adapter contracts, backup/restore runbooks, and security decisions in this directory as those integrations are implemented.

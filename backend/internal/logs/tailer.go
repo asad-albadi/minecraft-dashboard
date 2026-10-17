@@ -10,6 +10,7 @@ import (
 var ipAddress = regexp.MustCompile(`\b(?:\d{1,3}\.){3}\d{1,3}\b`)
 var uuid = regexp.MustCompile(`\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b`)
 var coordinates = regexp.MustCompile(`\(-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?\)`)
+var serverVersion = regexp.MustCompile(`Starting minecraft server version ([^\s]+)`)
 
 func Tail(path string, limit int) ([]string, error) {
 	file, err := os.Open(path)
@@ -54,4 +55,16 @@ func NewLines(previous, current []string) []string {
 		}
 	}
 	return current
+}
+
+// ServerVersion returns the most recent version advertised by a vanilla server
+// startup line, or an empty string when no such line is present.
+func ServerVersion(lines []string) string {
+	version := ""
+	for _, line := range lines {
+		if match := serverVersion.FindStringSubmatch(line); len(match) == 2 {
+			version = match[1]
+		}
+	}
+	return version
 }

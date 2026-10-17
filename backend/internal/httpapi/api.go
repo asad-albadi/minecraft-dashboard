@@ -44,13 +44,20 @@ func (a *API) status(c *fiber.Ctx) error {
 func (a *API) statusPayload(ctx context.Context) fiber.Map {
 	response, err := a.RCON.Command(ctx, "list")
 	if err != nil {
-		return fiber.Map{"state": "offline", "players": 0, "maxPlayers": 0, "detail": "RCON unreachable"}
+		return a.withVersion(fiber.Map{"state": "offline", "players": 0, "maxPlayers": 0, "detail": "RCON unreachable"})
 	}
 	players, max, _, ok := rcon.ParseListResponse(response)
 	if !ok {
-		return fiber.Map{"state": "unknown", "players": 0, "maxPlayers": 0, "detail": "unrecognized RCON list response"}
+		return a.withVersion(fiber.Map{"state": "unknown", "players": 0, "maxPlayers": 0, "detail": "unrecognized RCON list response"})
 	}
-	return fiber.Map{"state": "online", "players": players, "maxPlayers": max}
+	return a.withVersion(fiber.Map{"state": "online", "players": players, "maxPlayers": max})
+}
+
+func (a *API) withVersion(payload fiber.Map) fiber.Map {
+	if version := logs.ServerVersion(a.logTail()); version != "" {
+		payload["version"] = version
+	}
+	return payload
 }
 
 func (a *API) events(c *fiber.Ctx) error {

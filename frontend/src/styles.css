@@ -82,21 +82,43 @@ footer{background-color:#5e371e;background-image:linear-gradient(180deg,#6ed331 
 .player-avatar .avatar{width:100%;height:100%;border:0;box-shadow:none}
 .player-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;image-rendering:pixelated;background:#111}
 
-/* Let a short desktop viewport scroll naturally instead of clipping lower panels. */
+/* Give unused center-canvas space the same carved-stone character as the panels. */
+@media (min-width:1024px){
+  .center{background-color:#0a0e0f;background-image:linear-gradient(135deg,#ffffff05 25%,transparent 25% 50%,#0000001c 50% 75%,transparent 75%),repeating-linear-gradient(90deg,transparent 0 31px,#151b1d 32px 34px),repeating-linear-gradient(0deg,transparent 0 31px,#111719 32px 34px);background-size:8px 8px,34px 34px,34px 34px;box-shadow:inset 0 0 42px #000a}
+}
+
+/* Desktop is a contained game canvas: only the console itself may scroll. */
+@media (min-width:1024px){
+  body{overflow:hidden}
+  .app{height:100vh;min-height:0;overflow:hidden}
+  .shell{height:calc(100vh - 169px);min-height:0;overflow:hidden}
+  aside{height:100%;min-height:0;overflow:hidden}
+  .main-grid{height:100%;min-height:0;overflow:hidden}
+  .center{min-height:0}
+  .lower{min-height:0;overflow:hidden}
+  .lower>.stone-panel{min-height:0;overflow:hidden}
+  .rail{height:100%;min-height:0;overflow:hidden}
+}
 @media (min-width:1440px){
-  .shell{height:auto;min-height:calc(100vh - 195px)}
-  aside{height:auto;min-height:calc(100vh - 195px);overflow:visible}
-  .main-grid{height:auto;min-height:0}
-  .lower{height:auto;min-height:290px;overflow:visible}
-  .lower>.stone-panel{overflow:visible}
-  .rail{grid-template-rows:auto auto;height:auto;overflow:visible}
+  .shell{height:calc(100vh - 195px)}
+  aside{height:100%;min-height:0}
+  .main-grid{height:100%;min-height:0}
+  .lower{height:290px;min-height:0;overflow:hidden}
+  .rail{grid-template-rows:350px minmax(0,1fr);height:100%;overflow:hidden}
 }
 @media (min-width:1024px) and (max-height:820px){
-  .main-grid{min-height:0}
-  .center{display:block}
-  .hero{height:clamp(230px,36vh,350px)}
-  .lower{min-height:0}
-  .rail{grid-template-rows:auto auto;height:auto}
-  .console{display:block;min-height:0}
-  .console .log{height:215px;min-height:0;max-height:215px;flex:none}
+  header{height:105px;padding-block:10px}
+  footer{height:35px}
+  .shell{height:calc(100vh - 140px)}
+  .hero{height:clamp(200px,31vh,270px)}
+  .kpis{margin:10px 0;gap:9px}
+  .kpi{min-height:88px;padding:9px}
+  .kpi b{font-size:21px}
+  .lower{flex:1;height:auto;min-height:0}
+  .world-info .info-list>div{min-height:0;padding:4px 0}
+  .quick{padding-bottom:5px}
+  .quick .pixel-button{min-height:31px;margin:4px 8px 0;width:calc(100% - 16px);font-size:14px}
+  .rail{grid-template-rows:210px minmax(0,1fr);gap:10px}
+  .player{min-height:62px;margin-block:7px}
+  .console .log{height:auto;min-height:0;max-height:none;flex:1}
 }

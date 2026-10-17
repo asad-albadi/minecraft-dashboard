@@ -20,6 +20,14 @@ The dashboard uses a same-origin Server-Sent Events (SSE) connection at `/api/v1
 
 The player panel requests a public Minecraft head render by the public in-game name and uses the dashboard's built-in pixel face if that service is offline, blocked, or has no skin for the name. This affects only the browser image; it does not change, read, or expose Minecraft player-data files.
 
+## The desktop dashboard does not scroll as a page
+
+This is intentional. Desktop dashboards use a contained game-canvas layout; scroll the server-console log within its panel. Tablet and mobile layouts use normal page scrolling so controls remain reachable on narrow screens.
+
+## The version badge says `Checking server…`
+
+The badge reads the latest vanilla startup version from the configured read-only Minecraft log. It remains in its neutral loading state until a matching `Starting minecraft server version …` line is available; restart the dashboard after correcting a missing or unreadable log mount.
+
 ## Backend cannot reach the Minecraft `mc` service
 
 The dashboard Compose stack joins the existing external `minecraft_default` Docker network so the backend can use the Minecraft service alias `mc` and its private RCON port. Confirm the Minecraft stack is running and that the network exists with `docker network inspect minecraft_default`. Do not publish port `25575` to the host or internet.
