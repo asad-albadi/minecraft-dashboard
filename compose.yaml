@@ -1,0 +1,25 @@
+services:
+  dashboard-backend:
+    build: ./backend
+    environment:
+      DASHBOARD_LISTEN: ${DASHBOARD_LISTEN:-:8080}
+      MINECRAFT_HOST: ${MINECRAFT_HOST:-}
+      MINECRAFT_LOG_PATH: ${MINECRAFT_LOG_PATH:-}
+      MINECRAFT_WORLD_PATH: ${MINECRAFT_WORLD_PATH:-}
+      RCON_ADDRESS: ${RCON_ADDRESS:-}
+      RCON_PASSWORD: ${RCON_PASSWORD:-}
+      MINECRAFT_CONTAINER_NAME: ${MINECRAFT_CONTAINER_NAME:-}
+      DASHBOARD_BACKUP_PATH: ${DASHBOARD_BACKUP_PATH:-}
+      SESSION_SECRET: ${SESSION_SECRET:-}
+    ports:
+      - "127.0.0.1:8080:8080"
+    # Configure only read-only source mounts. Do not mount Docker's socket here.
+    volumes:
+      - dashboard-data:/var/lib/minecraft-dashboard
+  dashboard-frontend:
+    build: ./frontend
+    ports:
+      - "127.0.0.1:8081:80"
+    depends_on: [dashboard-backend]
+volumes:
+  dashboard-data:
