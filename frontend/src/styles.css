@@ -12,7 +12,7 @@
   header{background-image:linear-gradient(90deg,#111718cc,#202728aa 42%,#101617d9),linear-gradient(90deg,transparent 0 47%,#0004 48% 50%,transparent 51%),repeating-linear-gradient(0deg,#ffffff08 0 2px,transparent 3px 12px)}
   .main-grid{min-height:calc(100vh - 169px);grid-template-columns:minmax(700px,1fr) 385px}
   .center{display:flex;flex-direction:column}
-  .lower{flex:1;min-height:300px;grid-template-columns:minmax(390px,1.25fr) minmax(310px,1fr) minmax(275px,.78fr)}
+  .lower{flex:1;min-height:300px;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,.78fr)}
   .lower>.stone-panel{height:100%}
   .info-list b{max-width:none;font-size:15px}
   .rail{grid-template-rows:350px minmax(330px,1fr);height:calc(100vh - 169px)}
@@ -22,3 +22,8 @@
 }
 .stone-panel{background-image:linear-gradient(135deg,#ffffff08 25%,transparent 25% 50%,#00000012 50% 75%,transparent 75%),linear-gradient(145deg,#20262a,#121619 70%);background-size:7px 7px,auto}
 .world-info .info-list>div{min-height:29px;align-items:center}
+.app,.shell,.main-grid,.center,.rail,.lower{min-width:0}
+.app{overflow-x:hidden}
+.player div{min-width:0;overflow:hidden}
+.player b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log{overflow-wrap:anywhere;word-break:break-word}

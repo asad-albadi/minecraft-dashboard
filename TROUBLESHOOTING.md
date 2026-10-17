@@ -20,6 +20,8 @@ The dashboard Compose stack joins the existing external `minecraft_default` Dock
 
 Set both `MINECRAFT_WORLD_PATH` and `MINECRAFT_PROPERTIES_PATH` in the ignored `.env` file to the existing host paths. Compose mounts them read-only inside the dashboard container; it never changes the world files. The seed is intentionally masked by default.
 
+Minecraft time and weather additionally require the configured private RCON account to accept the vanilla read-only `time query daytime` and `weather query` commands. If a server/plugin returns a nonstandard response, the dashboard shows `Unavailable` rather than guessing; verify the commands directly from a trusted Minecraft administrator session before adding a compatibility adapter.
+
 ## Docker Compose reports missing or empty configuration
 
 Copy `.env.example` to `.env`, fill only the integrations you have explicitly approved, and keep it outside version control. Blank optional settings are valid; they disable the matching capability safely.

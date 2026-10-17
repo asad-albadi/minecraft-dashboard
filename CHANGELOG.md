@@ -10,6 +10,8 @@ All notable changes to this project are recorded here.
 - Configured the local dashboard environment with existing Minecraft read-only log/world paths and private network discovery.
 - Added verified world metadata: configured world name, game mode, difficulty, masked seed state, primary dimension, and asynchronously calculated world size.
 - Added a read-only initial Minecraft log tail to the console panel, with IP-address masking.
+- Added conservative vanilla-RCON parsing for Minecraft daytime and weather; unsupported command responses remain explicitly unavailable.
+- Tightened the desktop reference layout so the lower dashboard cards flex within the center column and long player/log text wraps or truncates without crossing into the utility rail.
 - Bun/Vite/React pixel-themed dashboard shell matching the supplied desktop composition and adapting for tablet/mobile.
 - Go/Fiber API skeleton with health, capability, read-only placeholder data, and safety-gated mutation routes.
 - Safe Minecraft `tellraw` JSON command construction with tests for escaping and control-character rejection.
