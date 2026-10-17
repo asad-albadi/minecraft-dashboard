@@ -175,6 +175,7 @@ nav button:nth-child(6) .pixel-icon:before{left:8px;top:8px;width:14px;height:14
 .grass-logo{display:grid;place-items:center;padding:0;overflow:hidden}
 .grass-logo:before{display:none}
 .grass-logo .dashboard-icon{width:70px;height:70px}
+.grass-logo .minecraft-logo{width:70px;height:70px;object-fit:contain;filter:drop-shadow(2px 3px 0 #050707)}
 nav button .dashboard-icon{width:40px;height:40px}
 .stone-panel h2>.dashboard-icon{width:27px;height:27px;margin:-5px 0}
 .kpi>.dashboard-icon{width:54px;height:54px;margin:0;flex:none}
@@ -205,10 +206,12 @@ nav button .dashboard-icon{width:40px;height:40px}
 }
 @media (max-width:1023px){
   .grass-logo .dashboard-icon{width:52px;height:52px}
+  .grass-logo .minecraft-logo{width:52px;height:52px}
   nav button .dashboard-icon{width:36px;height:36px}
 }
 @media (max-width:767px){
   .grass-logo .dashboard-icon{width:40px;height:40px}
+  .grass-logo .minecraft-logo{width:40px;height:40px}
   nav button .dashboard-icon{width:32px;height:32px}
   .stone-panel h2>.dashboard-icon{width:23px;height:23px}
   .kpi>.dashboard-icon{width:42px;height:42px}

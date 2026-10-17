@@ -6,6 +6,7 @@ All notable changes to this project are recorded here.
 
 ### Added
 
+- Replaced the header’s raster overview tile with the supplied scalable Minecraft grass-block SVG mark.
 - Extended the supplied icon system to every displayed dashboard control and indicator, including the hero world marker, status, player signal, console submit control, and detail navigation.
 - Replaced the generated dashboard icon sheet with individually cropped, role-mapped tiles from the supplied labeled icon artwork across navigation, live-status/console headings, stats, world metadata, weather, and quick actions.
 - Added a read-only Players view sourced from live vanilla player cache, operator, and world-stat files, with play time, deaths, distance walked, mob kills, operator marker, and skin heads.
