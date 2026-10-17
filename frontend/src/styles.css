@@ -220,14 +220,15 @@ nav button .dashboard-icon{width:40px;height:40px}
 /* The server identity belongs to the hero card; the standalone page header is intentionally absent. */
 .shell{min-height:calc(100vh - 43px)}
 aside{min-height:calc(100vh - 43px)}
-.server-identity{left:50%;top:50%;bottom:auto;transform:translate(-50%,-50%);justify-content:center;min-width:0;width:min(88%,860px);padding:20px;background:linear-gradient(90deg,transparent,#07100ee0 16%,#07100ee0 84%,transparent);text-align:center}
-.server-identity>div{display:grid;justify-items:center;gap:13px}
+.server-identity{left:28px;top:auto;bottom:22px;transform:none;justify-content:flex-start;min-width:0;width:auto;max-width:calc(100% - 56px);padding:16px 36px 16px 16px;background:linear-gradient(90deg,#07100eeb 0,#07100ed8 72%,transparent);text-align:left}
+.server-identity>div{display:grid;justify-items:start;gap:13px}
 .server-identity strong{font-size:clamp(19px,2.45vw,38px);line-height:1.12;white-space:nowrap}
-.server-identity strong span{display:block}
-.hero-status{display:flex;align-items:center;justify-content:center;gap:8px;color:#e9eee8;font:12px 'Press Start 2P',Oxanium,monospace;text-shadow:2px 2px #050707}
+.server-identity strong span{display:inline}
+.server-identity strong span+span:before{content:' '}
+.hero-status{display:flex;align-items:center;justify-content:flex-start;gap:8px;color:#e9eee8;font:12px 'Press Start 2P',Oxanium,monospace;text-shadow:2px 2px #050707}
 .hero-status .dashboard-icon{width:25px;height:25px}
 .hero-status b{color:#8df267;font-size:14px}
 .hero-status.offline b,.hero-status.unknown b{color:#e0b05c}
 .hero-status small{color:#c5cdd0;font:12px Oxanium,monospace;letter-spacing:.2px}
 @media (min-width:1024px){.shell{height:auto;min-height:calc(100vh - 43px)}aside{min-height:calc(100vh - 43px)}}
-@media (max-width:767px){.server-identity{width:96%;padding:12px 4px}.server-identity strong{font-size:12px}.hero-status{gap:5px;font-size:9px}.hero-status b{font-size:10px}.hero-status small{font-size:11px}.hero-status .dashboard-icon{width:20px;height:20px}}
+@media (max-width:767px){.server-identity{left:14px;bottom:14px;max-width:calc(100% - 28px);padding:10px 14px 10px 10px}.server-identity strong{font-size:12px;white-space:normal}.server-identity strong span{display:block}.server-identity strong span+span:before{content:none}.hero-status{gap:5px;font-size:9px}.hero-status b{font-size:10px}.hero-status small{font-size:11px}.hero-status .dashboard-icon{width:20px;height:20px}}

@@ -19,6 +19,7 @@ All notable changes to this project are recorded here.
 
 ### Fixed
 
+- Anchored the overview hero identity to its bottom-left corner and kept the server name on one desktop line.
 - Removed the standalone page header and centered the server name, online state, and verified Java version inside the overview hero card.
 - Enlarged square KPI icons to fill their available card height and corrected the Players Online crop so its full three-player illustration and right stone frame are visible.
 - Rebuilt the deployed Compose frontend so the browser now serves the current tile-based icon UI instead of a stale pre-rebuild bundle.
