@@ -131,7 +131,7 @@ func (a *API) playerProfiles(c *fiber.Ctx) error {
 	if a.Config.UserCachePath == "" || a.Config.WorldPath == "" {
 		return c.JSON([]players.Profile{})
 	}
-	profiles, err := players.ReadProfiles(a.Config.UserCachePath, a.Config.OpsPath, a.Config.WorldPath)
+	profiles, err := players.ReadProfiles(a.Config.UserCachePath, a.Config.OpsPath, a.Config.WorldPath, a.Config.LogDirectory)
 	if err != nil {
 		return c.Status(http.StatusServiceUnavailable).JSON(fiber.Map{"error": "player profiles unavailable"})
 	}

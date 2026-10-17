@@ -24,6 +24,8 @@ The player panel requests a public Minecraft head render by the public in-game n
 
 The detailed profile cards are optional and read the live vanilla `usercache.json`, `ops.json`, and existing world `players/stats/*.json` sources. Set `MINECRAFT_USERCACHE_PATH` and `MINECRAFT_OPS_PATH` in the ignored `.env` file and recreate the dashboard backend. The dashboard intentionally omits UUIDs and exact locations, and every source mount is read only.
 
+First-seen, last-seen, and join-event fields additionally require `MINECRAFT_LOG_DIRECTORY` to point to the existing Minecraft logs directory. Archived `YYYY-MM-DD-*.log.gz` files provide the retained date history; `latest.log` contributes current-day joins. These fields are hidden when no usable log history is mounted.
+
 ## The desktop dashboard does not scroll as a page
 
 This is intentional. Desktop dashboards use a contained game-canvas layout; scroll the server-console log within its panel. Tablet and mobile layouts use normal page scrolling so controls remain reachable on narrow screens.

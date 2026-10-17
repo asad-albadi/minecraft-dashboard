@@ -5,6 +5,7 @@ services:
       DASHBOARD_LISTEN: ${DASHBOARD_LISTEN:-:8080}
       MINECRAFT_HOST: ${MINECRAFT_HOST:-}
       MINECRAFT_LOG_PATH: /minecraft/logs/latest.log
+      MINECRAFT_LOG_DIRECTORY: /minecraft/logs
       MINECRAFT_WORLD_PATH: /minecraft/world
       MINECRAFT_PROPERTIES_PATH: /minecraft/server.properties
       MINECRAFT_USERCACHE_PATH: /minecraft/usercache.json
@@ -19,7 +20,7 @@ services:
     # Configure only read-only source mounts. Do not mount Docker's socket here.
     volumes:
       - dashboard-data:/var/lib/minecraft-dashboard
-      - ${MINECRAFT_LOG_PATH:-/dev/null}:/minecraft/logs/latest.log:ro
+      - ${MINECRAFT_LOG_DIRECTORY:-/dev/null}:/minecraft/logs:ro
       - ${MINECRAFT_WORLD_PATH:-/dev/null}:/minecraft/world:ro
       - ${MINECRAFT_PROPERTIES_PATH:-/dev/null}:/minecraft/server.properties:ro
       - ${MINECRAFT_USERCACHE_PATH:-/dev/null}:/minecraft/usercache.json:ro

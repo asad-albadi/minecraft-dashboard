@@ -77,9 +77,9 @@ footer{background-color:#5e371e;background-image:linear-gradient(180deg,#6ed331 
 .title b{color:#f8f6ef;text-shadow:2px 2px #8d9999,4px 4px #30373b,6px 6px #050607}
 .hero-copy strong{color:#fbf8ee;text-shadow:2px 2px #85969a,4px 4px #111619,6px 6px #050607}
 
-/* Hand-drawn stone/iron facets give the original pixel wordmark material depth. */
-.title b,.hero-copy strong{background:repeating-linear-gradient(135deg,#fffdf5 0 3px,#d9d9d1 4px 7px,#fffdf5 8px 10px,#9ca2a0 11px 13px);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
-.hero-copy strong{background-image:repeating-linear-gradient(135deg,#fffdf5 0 3px,#e2e1d8 4px 8px,#ffffff 9px 11px,#aeb7b6 12px 14px)}
+/* Stone letter faces reference the supplied wordmark's carved, mottled material—not its logo shape. */
+.title b,.hero-copy strong{background-color:#d8d5d1;background-image:linear-gradient(135deg,transparent 0 23%,#fffef3 24% 34%,transparent 35% 61%,#96999a 62% 70%,transparent 71%),linear-gradient(45deg,#aaa9a7 0 15%,#e8e5df 16% 39%,#b4b2b0 40% 58%,#f6f2ea 59% 78%,#9b9c9c 79%);background-size:13px 13px,100% 100%;background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;text-shadow:2px 2px #777d7f,4px 4px #343a3c,6px 6px #050607}
+.hero-copy strong{background-color:#e5e2db;background-image:linear-gradient(135deg,transparent 0 27%,#ffffff 28% 39%,transparent 40% 68%,#a8abaa 69% 77%,transparent 78%),linear-gradient(45deg,#c1bfba 0 17%,#f8f4ea 18% 46%,#b8b7b4 47% 68%,#ffffff 69% 82%,#aaa9a6 83%);text-shadow:2px 2px #879295,4px 4px #121719,6px 6px #050607}
 
 /* Purposeful, item-like KPI markers replace generic boxed glyphs. */
 .kpi-indicator{position:relative;display:block;width:45px;height:45px;flex:none;image-rendering:pixelated;filter:drop-shadow(2px 2px 0 #050707)}
@@ -94,6 +94,21 @@ footer{background-color:#5e371e;background-image:linear-gradient(180deg,#6ed331 
 
 .profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:15px;margin-top:18px}.profile-card{border:3px solid #303a3d;background:linear-gradient(135deg,#1d2427,#111618);box-shadow:inset 2px 2px #596264,inset -3px -3px #07090a;padding:13px}.profile-heading{display:flex;align-items:center;gap:11px;padding-bottom:12px;border-bottom:1px solid #3a4346}.profile-heading .player-avatar{width:54px;height:54px}.profile-heading>div{display:grid;gap:5px;min-width:0}.profile-heading b{font-size:19px;overflow:hidden;text-overflow:ellipsis}.profile-heading small{color:#aeb8bd}.profile-heading small:first-letter{color:#61d83e}.profile-heading em{margin-left:auto;font-style:normal;font:11px 'Press Start 2P',monospace;color:#ffda79;border:1px solid #b48629;padding:5px 4px}.profile-card dl{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:10px 0 0}.profile-card dl div{padding:8px 4px;border-bottom:1px solid #293135}.profile-card dt{color:#99a7af;font-size:13px}.profile-card dd{margin:3px 0 0;color:#f2f1ea;font-weight:700}.profile-empty{max-width:670px;padding:18px;border:2px solid #30393d;background:#111619;color:#b9c2c7}.profile-empty code{color:#80db59}.player-detail{min-height:calc(100vh - 220px)}
 @media(max-width:767px){.profile-card dl{grid-template-columns:1fr}.profile-heading b{font-size:16px}.player-detail{padding:15px}.profile-empty{font-size:14px}}
+
+/* Navigation and stat labels use the same compact voxel vocabulary as the title. */
+nav button{font-family:'Press Start 2P',Oxanium,monospace;font-size:13px;letter-spacing:-.4px;text-shadow:1px 1px #000}
+nav button .pixel-icon{position:relative;width:34px;height:34px;font-size:0;background:#111619;border:2px solid #050707;box-shadow:inset 2px 2px #3e4749,inset -2px -2px #070909}
+nav button .pixel-icon:before,nav button .pixel-icon:after{content:'';position:absolute}
+nav button:nth-child(1) .pixel-icon:before{left:8px;top:13px;width:14px;height:12px;background:#d9c58f;border:2px solid #725b36;box-shadow:0 -7px 0 -1px #e4d6a6;transform:skewY(-26deg)}
+nav button:nth-child(2) .pixel-icon:before{left:8px;top:7px;width:15px;height:18px;background:#d89559;border:2px solid #57311d;box-shadow:inset 0 -6px #e9a065}nav button:nth-child(2) .pixel-icon:after{left:11px;top:14px;width:3px;height:3px;background:#4db5d8;box-shadow:7px 0 #4db5d8}
+nav button:nth-child(3) .pixel-icon:before{inset:6px;background:linear-gradient(145deg,#7ce34a 0 25%,#4db330 26% 34%,#8d552a 35%);border:1px solid #1b2816;box-shadow:inset 0 -8px #75441f}
+nav button:nth-child(4) .pixel-icon:before{left:6px;top:9px;width:18px;height:12px;border:2px solid #dbe1df;border-left:0;box-shadow:-5px 0 #dbe1df}nav button:nth-child(4) .pixel-icon:after{left:8px;top:13px;width:6px;height:2px;background:#66dc4a;box-shadow:7px 4px #dbe1df}
+nav button:nth-child(5) .pixel-icon:before{left:6px;top:11px;width:20px;height:15px;background:#8b5428;border:2px solid #4a2918;box-shadow:inset 0 4px #cb8c3d}nav button:nth-child(5) .pixel-icon:after{left:8px;top:6px;width:16px;height:7px;border:3px solid #d39a4a;border-bottom:0}
+nav button:nth-child(6) .pixel-icon:before{left:8px;top:8px;width:14px;height:14px;background:repeating-conic-gradient(#d6dcda 0 8%,#526064 0 15%);clip-path:polygon(50% 0,63% 18%,82% 12%,88% 31%,100% 50%,88% 69%,82% 88%,63% 82%,50% 100%,37% 82%,18% 88%,12% 69%,0 50%,12% 31%,18% 12%,37% 18%)}
+.kpi small,.kpi b{font-family:'Press Start 2P',Oxanium,monospace;letter-spacing:-.4px}.kpi small{font-size:10px}.kpi b{font-size:21px}
+.players-panel{display:flex;flex-direction:column}.players-panel>.pixel-button{margin-top:auto}
+.hero-copy{max-width:calc(100% - 24px)}
+@media(max-width:550px){.hero-copy{left:10px;bottom:9px;gap:8px;padding:7px 10px 7px 0}.hero-copy .creeper{width:46px;height:46px;font-size:32px}.hero-copy strong{font-size:11px;letter-spacing:-1px;white-space:nowrap}.hero-copy span{font-size:12px}}
 
 /* Real player skin heads with a local pixel-face fallback when the public image is unavailable. */
 .player-avatar{position:relative;display:block;width:58px;height:52px;flex:none;background:#111;border:3px solid #111;box-shadow:inset 0 0 0 3px #ffffff11}

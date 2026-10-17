@@ -14,7 +14,7 @@ The browser renders an online player's public skin head from their public Minecr
 
 ## Live player profiles
 
-Set `MINECRAFT_USERCACHE_PATH` and `MINECRAFT_OPS_PATH` to the existing vanilla server files to enable the **Players** route. Compose mounts those files and the existing configured world directory read-only. The backend combines the Minecraft user cache, operator list, and `world/players/stats/*.json` to return player name, operator status, play time, deaths, walked distance, and mob kills. It does not expose UUIDs or locations, and never changes the source data.
+Set `MINECRAFT_USERCACHE_PATH` and `MINECRAFT_OPS_PATH` to the existing vanilla server files to enable the **Players** route. Compose mounts those files and the existing configured world directory read-only. The backend combines the Minecraft user cache, operator list, and `world/players/stats/*.json` to return player name, operator status, play time, deaths, walked distance, and mob kills. When `MINECRAFT_LOG_DIRECTORY` points at retained `*.log.gz` files and `latest.log`, it also derives first-seen date, last-seen date, and join count from actual login lines. It does not expose UUIDs or locations, and never changes the source data.
 
 ## Server version
 

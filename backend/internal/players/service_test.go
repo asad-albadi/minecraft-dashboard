@@ -1,6 +1,7 @@
 package players
 
 import (
+	"compress/gzip"
 	"os"
 	"path/filepath"
 	"testing"
@@ -12,7 +13,11 @@ func TestReadProfilesCombinesLiveCacheOperatorsAndWorldStats(t *testing.T) {
 	ops := filepath.Join(dir, "ops.json")
 	world := filepath.Join(dir, "world")
 	stats := filepath.Join(world, "players", "stats")
+	logs := filepath.Join(dir, "logs")
 	if err := os.MkdirAll(stats, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(logs, 0755); err != nil {
 		t.Fatal(err)
 	}
 	if err := os.WriteFile(cache, []byte(`[{"uuid":"alpha","name":"Alex"},{"uuid":"beta","name":"Bee"}]`), 0600); err != nil {
@@ -25,7 +30,9 @@ func TestReadProfilesCombinesLiveCacheOperatorsAndWorldStats(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	profiles, err := ReadProfiles(cache, ops, world)
+	writeCompressedLog(t, filepath.Join(logs, "2026-10-01-1.log.gz"), "[12:00:00] [Server thread/INFO]: Alex joined the game\n")
+	writeCompressedLog(t, filepath.Join(logs, "2026-10-03-1.log.gz"), "[12:00:00] [Server thread/INFO]: Alex joined the game\n")
+	profiles, err := ReadProfiles(cache, ops, world, logs)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -33,7 +40,25 @@ func TestReadProfilesCombinesLiveCacheOperatorsAndWorldStats(t *testing.T) {
 		t.Fatalf("profiles = %#v", profiles)
 	}
 	profile := profiles[0]
-	if profile.Name != "Alex" || !profile.Operator || profile.PlayTime != "2.0 h" || profile.Deaths != "3" || profile.Walked != "12.3 km" || profile.MobKills != "12" {
+	if profile.Name != "Alex" || !profile.Operator || profile.PlayTime != "2.0 h" || profile.Deaths != "3" || profile.Walked != "12.3 km" || profile.MobKills != "12" || profile.JoinEvents != "2" || profile.FirstJoin != "2026-10-01" || profile.LastJoin != "2026-10-03" {
 		t.Fatalf("unexpected profile: %#v", profile)
+	}
+}
+
+func writeCompressedLog(t *testing.T, path, body string) {
+	t.Helper()
+	file, err := os.Create(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	writer := gzip.NewWriter(file)
+	if _, err := writer.Write([]byte(body)); err != nil {
+		t.Fatal(err)
+	}
+	if err := writer.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if err := file.Close(); err != nil {
+		t.Fatal(err)
 	}
 }
