@@ -27,3 +27,24 @@
 .player div{min-width:0;overflow:hidden}
 .player b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .log{overflow-wrap:anywhere;word-break:break-word}
+
+/* Original voxel treatment: stepped blockwork, lantern glow, grass cube, and faces. */
+header{position:relative;isolation:isolate;background-color:#121719;background-image:radial-gradient(circle at 9% 58%,#ffb32966 0 3px,transparent 19px),radial-gradient(circle at 74% 58%,#ffb32966 0 3px,transparent 20px),linear-gradient(90deg,#07100a 0 7%,transparent 14% 69%,#091008 77% 100%),repeating-linear-gradient(90deg,#22292b 0 44px,#111617 45px 48px,#30383a 49px 53px,#111617 54px 88px),repeating-linear-gradient(0deg,#161b1d 0 22px,#283034 23px 25px,#0c1011 26px 47px)}
+header:before,header:after{content:'';position:absolute;z-index:-1;top:0;width:86px;height:100%;opacity:.95;background:linear-gradient(90deg,#1b261b,#0c120d),repeating-linear-gradient(90deg,#4b2e1b 0 15px,#2b1a12 16px 23px);box-shadow:inset -8px 0 #050707}
+header:before{left:0;border-right:4px solid #2b3435}
+header:after{right:0;border-left:4px solid #2b3435;transform:scaleX(-1)}
+.grass-logo{position:relative;isolation:isolate;font-size:0;border:5px solid #0a0d0d;background:linear-gradient(145deg,#71e241 0 18%,#4fbd32 19% 29%,#71431f 30% 100%);box-shadow:inset 5px 5px #a4ee5c,inset -6px -6px #3b2114,5px 6px #030404}
+.grass-logo:before{content:'';position:absolute;inset:16px;background:linear-gradient(90deg,transparent 0 26%,#aef35d 27% 33%,transparent 34% 66%,#aef35d 67% 73%,transparent 74%),linear-gradient(transparent 0 25%,#aef35d 26% 32%,transparent 33% 67%,#aef35d 68% 74%,transparent 75%);border:3px solid #805127;box-shadow:inset 0 0 0 3px #3c2518}
+.avatar{position:relative;overflow:hidden;background:linear-gradient(135deg,#543017 0 19%,#743f20 20% 29%,#ef9d5a 30% 76%,#6a3920 77%)}
+.avatar:before{content:'';position:absolute;left:13%;top:42%;width:18%;height:14%;background:#56b3d9;box-shadow:27px 0 #56b3d9,4px 15px #7a4329,17px 15px #7a4329}.steve:before{left:13%;box-shadow:20px 0 #56b3d9,3px 13px #7a4329,14px 13px #7a4329}
+.stone-panel{border-image:linear-gradient(135deg,#4b5556 0 9%,#111516 9% 50%,#030405 50% 100%) 1;background-color:#14191b;box-shadow:inset 3px 3px #566163,inset -5px -6px #050707,4px 4px #060708}
+.stone-panel h2{letter-spacing:.4px;text-shadow:2px 2px #030506}
+.hero{border-color:#111718;border-image:linear-gradient(135deg,#4c5658 0 9%,#121718 9% 50%,#050607 50% 100%) 1;box-shadow:inset 0 0 0 5px #080a0b,8px 8px #050607}
+.hero-copy{padding:11px 14px 10px 0;background:linear-gradient(90deg,#07100edc,#07100ea8 78%,transparent);min-width:52%}
+.hero-copy strong{color:#e7e4de;text-shadow:3px 3px #0a0a09,6px 6px #5b5b58}
+.status{box-shadow:inset 2px 2px #303a3b,inset -2px -2px #050707}
+.status.online i{border:2px solid #173b17}
+.pixel-button{border-image:linear-gradient(135deg,#556065 0 15%,#151a1d 15% 60%,#050607 60% 100%) 1;text-shadow:1px 1px #000}
+.players-panel,.console{background-color:#111618}
+.player{min-height:70px;box-shadow:inset 1px 1px #30393b,inset -2px -2px #07090a}
+.log{background-image:repeating-linear-gradient(0deg,#ffffff03 0 1px,transparent 2px 5px);scrollbar-color:#667074 #090d0f}
