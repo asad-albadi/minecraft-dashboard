@@ -4,4 +4,8 @@
 - [Troubleshooting](../TROUBLESHOOTING.md) — deployment and integration diagnosis.
 - [Contributor guide](../AGENTS.md) — operating rules for developers and agents.
 
+## Live read-only updates
+
+`GET /api/v1/events` is a Server-Sent Events endpoint. It emits `connection.state`, `server.status`, and `console.line` events. Console events are taken from the existing read-only log path, passed through the same sanitization and RCON-noise filtering as the log-tail endpoint, and deduplicated across normal appends. On a log rotation the fresh sanitized tail is emitted so the dashboard resumes observing the replacement log. The endpoint never accepts commands and does not expose RCON credentials or host access.
+
 Keep detailed architecture, adapter contracts, backup/restore runbooks, and security decisions in this directory as those integrations are implemented.

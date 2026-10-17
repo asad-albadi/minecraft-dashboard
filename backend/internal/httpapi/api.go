@@ -1,6 +1,10 @@
 package httpapi
 
 import (
+	"bufio"
+	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"minecraft-dashboard/backend/internal/capabilities"
 	"minecraft-dashboard/backend/internal/chat"
@@ -9,6 +13,7 @@ import (
 	"minecraft-dashboard/backend/internal/rcon"
 	"minecraft-dashboard/backend/internal/world"
 	"net/http"
+	"time"
 )
 
 type API struct {
@@ -31,20 +36,72 @@ func (a *API) Register(app *fiber.App) {
 	app.Post("/api/v1/chat/messages", a.chat)
 	app.Post("/api/v1/console/commands", a.unavailable("console"))
 	app.Post("/api/v1/server/:operation", a.unavailable("lifecycle"))
-	app.Get("/api/v1/events", func(c *fiber.Ctx) error {
-		return c.Status(http.StatusNotImplemented).JSON(fiber.Map{"error": "event stream unavailable until a log adapter is configured"})
-	})
+	app.Get("/api/v1/events", a.events)
 }
 func (a *API) status(c *fiber.Ctx) error {
-	response, err := a.RCON.Command(c.Context(), "list")
+	return c.JSON(a.statusPayload(c.Context()))
+}
+func (a *API) statusPayload(ctx context.Context) fiber.Map {
+	response, err := a.RCON.Command(ctx, "list")
 	if err != nil {
-		return c.JSON(fiber.Map{"state": "offline", "players": 0, "maxPlayers": 0, "detail": "RCON unreachable"})
+		return fiber.Map{"state": "offline", "players": 0, "maxPlayers": 0, "detail": "RCON unreachable"}
 	}
 	players, max, _, ok := rcon.ParseListResponse(response)
 	if !ok {
-		return c.JSON(fiber.Map{"state": "unknown", "players": 0, "maxPlayers": 0, "detail": "unrecognized RCON list response"})
+		return fiber.Map{"state": "unknown", "players": 0, "maxPlayers": 0, "detail": "unrecognized RCON list response"}
 	}
-	return c.JSON(fiber.Map{"state": "online", "players": players, "maxPlayers": max})
+	return fiber.Map{"state": "online", "players": players, "maxPlayers": max}
+}
+
+func (a *API) events(c *fiber.Ctx) error {
+	c.Set(fiber.HeaderContentType, "text/event-stream")
+	c.Set(fiber.HeaderCacheControl, "no-cache")
+	c.Set(fiber.HeaderConnection, "keep-alive")
+	c.Context().SetBodyStreamWriter(func(writer *bufio.Writer) {
+		previous := a.logTail()
+		if !writeEvent(writer, "connection.state", fiber.Map{"state": "connected"}) || !writeEvent(writer, "server.status", a.statusPayload(context.Background())) {
+			return
+		}
+
+		ticker := time.NewTicker(time.Second)
+		defer ticker.Stop()
+		for tick := 1; ; tick++ {
+			<-ticker.C
+			current := a.logTail()
+			for _, line := range logs.NewLines(previous, current) {
+				if !writeEvent(writer, "console.line", fiber.Map{"line": line}) {
+					return
+				}
+			}
+			previous = current
+			if tick%15 == 0 && !writeEvent(writer, "server.status", a.statusPayload(context.Background())) {
+				return
+			}
+		}
+	})
+	return nil
+}
+
+func (a *API) logTail() []string {
+	if a.Config.LogPath == "" {
+		return nil
+	}
+	lines, err := logs.Tail(a.Config.LogPath, 100)
+	if err != nil {
+		return nil
+	}
+	return lines
+}
+
+func writeEvent(writer *bufio.Writer, name string, payload any) bool {
+	data, err := json.Marshal(payload)
+	if err != nil {
+		return false
+	}
+	if _, err = fmt.Fprintf(writer, "event: %s\ndata: %s\n\n", name, data); err != nil {
+		return false
+	}
+	return writer.Flush() == nil
 }
 func (a *API) players(c *fiber.Ctx) error {
 	response, err := a.RCON.Command(c.Context(), "list")

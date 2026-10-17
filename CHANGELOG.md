@@ -6,6 +6,7 @@ All notable changes to this project are recorded here.
 
 ### Added
 
+- Added a read-only Server-Sent Events (SSE) stream for live server status and sanitized console-log additions, with automatic browser reconnection.
 - Original cinematic voxel hero-valley and cliffside-cottage artwork, integrated into the dashboard’s hero and decorative sidebar.
 - Configured the local dashboard environment with existing Minecraft read-only log/world paths and private network discovery.
 - Added verified world metadata: configured world name, game mode, difficulty, masked seed state, primary dimension, and asynchronously calculated world size.
