@@ -164,6 +164,14 @@ nav button:nth-child(6) .pixel-icon:before{left:8px;top:8px;width:14px;height:14
 
 /* Exact, labelled tiles cropped from the supplied dashboard icon sheet. */
 .dashboard-icon{display:block;flex:none;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(2px 2px 0 #050707)}
+.status{grid-template-columns:24px 1fr}
+.status .status-icon{width:22px;height:22px;margin:-4px 0}
+.hero-indicator{width:64px;height:64px;background:#0a1710;box-shadow:0 0 0 3px #43c72c,3px 3px 0 #050707}
+.signal-icon{width:28px;height:28px;margin-left:auto}
+.button-icon{width:22px;height:22px;vertical-align:middle}
+.players-panel>.pixel-button,.detail>.pixel-button{display:flex;align-items:center;justify-content:center;gap:7px}
+.console form .pixel-button{display:grid;place-items:center}
+.console form .submit-icon{width:29px;height:29px}
 .grass-logo{display:grid;place-items:center;padding:0;overflow:hidden}
 .grass-logo:before{display:none}
 .grass-logo .dashboard-icon{width:70px;height:70px}
