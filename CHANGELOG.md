@@ -13,6 +13,7 @@ All notable changes to this project are recorded here.
 - Added conservative vanilla-RCON parsing for Minecraft daytime and weather; unsupported command responses remain explicitly unavailable.
 - Tightened the desktop reference layout so the lower dashboard cards flex within the center column and long player/log text wraps or truncates without crossing into the utility rail.
 - Reworked the dashboard’s visual primitives with original stepped voxel blockwork, lantern glow, grass-cube branding, pixel-face avatars, inset console texture, and heavier stone bevels to more closely match the supplied visual reference.
+- Matched the 1536×960 reference composition more closely with a measured 350 px utility rail, expanded center canvas, fixed-height desktop shell, non-wrapping panel headers, and a visible in-frame footer.
 - Bun/Vite/React pixel-themed dashboard shell matching the supplied desktop composition and adapting for tablet/mobile.
 - Go/Fiber API skeleton with health, capability, read-only placeholder data, and safety-gated mutation routes.
 - Safe Minecraft `tellraw` JSON command construction with tests for escaping and control-character rejection.

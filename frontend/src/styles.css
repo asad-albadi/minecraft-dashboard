@@ -48,3 +48,28 @@ header:after{right:0;border-left:4px solid #2b3435;transform:scaleX(-1)}
 .players-panel,.console{background-color:#111618}
 .player{min-height:70px;box-shadow:inset 1px 1px #30393b,inset -2px -2px #07090a}
 .log{background-image:repeating-linear-gradient(0deg,#ffffff03 0 1px,transparent 2px 5px);scrollbar-color:#667074 #090d0f}
+
+/* 1536 × 960 reconstruction: measured against the supplied reference canvas. */
+@media (min-width:1440px){
+  body{overflow:hidden}
+  header{height:128px;padding:14px 30px}
+  .shell{height:calc(100vh - 195px);min-height:0}
+  aside{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+  .sidebar-scene{height:auto;min-height:0;flex:1}
+  .main-grid{height:100%;min-height:0;grid-template-columns:minmax(0,1fr) 390px;gap:12px;padding:10px}
+  .center{min-height:0}
+  .hero{height:350px;flex:none}
+  .kpis{margin:12px 0;gap:12px;flex:none}
+  .kpi{min-height:112px}
+  .lower{height:290px;min-height:0;flex:none;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,.78fr);gap:12px;overflow:hidden}
+  .lower>.stone-panel{min-height:0;overflow:hidden}
+  .lower .stone-panel h2{white-space:nowrap;font-size:11px;gap:8px;padding:10px 10px;letter-spacing:.2px}
+  .players-panel h2,.console h2{white-space:nowrap;font-size:14px}
+  .world-info .info-list>div{padding:5px 0;min-height:28px}
+  .info-list{padding:6px 12px}
+  .rail{grid-template-rows:350px 340px;height:auto;align-content:start;gap:14px;overflow:hidden}
+  .console .log{min-height:0}
+  footer{height:67px}
+}
+
+footer{background-color:#5e371e;background-image:linear-gradient(180deg,#6ed331 0 18px,#2c7c21 19px 27px,transparent 28px),repeating-linear-gradient(90deg,#5c361e 0 20px,#754724 21px 39px,#442717 40px 45px),repeating-linear-gradient(0deg,transparent 0 15px,#3d2417 16px 19px);background-size:100% 100%,100% 100%,100% 19px;background-position:0 0,0 0,0 27px;background-repeat:no-repeat,repeat,repeat;border-top:7px solid #8ae33e;box-shadow:inset 0 9px #4d9d24}
