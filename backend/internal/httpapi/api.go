@@ -10,6 +10,7 @@ import (
 	"minecraft-dashboard/backend/internal/chat"
 	"minecraft-dashboard/backend/internal/config"
 	"minecraft-dashboard/backend/internal/logs"
+	"minecraft-dashboard/backend/internal/players"
 	"minecraft-dashboard/backend/internal/rcon"
 	"minecraft-dashboard/backend/internal/world"
 	"net/http"
@@ -31,6 +32,7 @@ func (a *API) Register(app *fiber.App) {
 	app.Get("/api/v1/status", a.status)
 	app.Get("/api/v1/metrics", func(c *fiber.Ctx) error { return c.JSON(fiber.Map{"tps": nil, "memory": nil, "uptime": nil}) })
 	app.Get("/api/v1/players", a.players)
+	app.Get("/api/v1/player-profiles", a.playerProfiles)
 	app.Get("/api/v1/world", a.world)
 	app.Get("/api/v1/logs", a.logs)
 	app.Post("/api/v1/chat/messages", a.chat)
@@ -124,6 +126,16 @@ func (a *API) players(c *fiber.Ctx) error {
 		result = append(result, fiber.Map{"id": name, "name": name})
 	}
 	return c.JSON(result)
+}
+func (a *API) playerProfiles(c *fiber.Ctx) error {
+	if a.Config.UserCachePath == "" || a.Config.WorldPath == "" {
+		return c.JSON([]players.Profile{})
+	}
+	profiles, err := players.ReadProfiles(a.Config.UserCachePath, a.Config.OpsPath, a.Config.WorldPath)
+	if err != nil {
+		return c.Status(http.StatusServiceUnavailable).JSON(fiber.Map{"error": "player profiles unavailable"})
+	}
+	return c.JSON(profiles)
 }
 func (a *API) world(c *fiber.Ctx) error {
 	if a.Config.PropertiesPath == "" || a.Config.WorldPath == "" {

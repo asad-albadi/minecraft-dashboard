@@ -77,6 +77,24 @@ footer{background-color:#5e371e;background-image:linear-gradient(180deg,#6ed331 
 .title b{color:#f8f6ef;text-shadow:2px 2px #8d9999,4px 4px #30373b,6px 6px #050607}
 .hero-copy strong{color:#fbf8ee;text-shadow:2px 2px #85969a,4px 4px #111619,6px 6px #050607}
 
+/* Hand-drawn stone/iron facets give the original pixel wordmark material depth. */
+.title b,.hero-copy strong{background:repeating-linear-gradient(135deg,#fffdf5 0 3px,#d9d9d1 4px 7px,#fffdf5 8px 10px,#9ca2a0 11px 13px);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.hero-copy strong{background-image:repeating-linear-gradient(135deg,#fffdf5 0 3px,#e2e1d8 4px 8px,#ffffff 9px 11px,#aeb7b6 12px 14px)}
+
+/* Purposeful, item-like KPI markers replace generic boxed glyphs. */
+.kpi-indicator{position:relative;display:block;width:45px;height:45px;flex:none;image-rendering:pixelated;filter:drop-shadow(2px 2px 0 #050707)}
+.kpi-indicator.player{background:linear-gradient(135deg,#563019 0 17%,#74411f 18% 27%,#e99b58 28% 77%,#63361f 78%);border:3px solid #111820;box-shadow:inset 0 0 0 3px #ffffff16}
+.kpi-indicator.player:before{content:'';position:absolute;left:8px;top:18px;width:7px;height:6px;background:#59b9dd;box-shadow:18px 0 #59b9dd,4px 10px #7b4328,12px 10px #7b4328}
+.kpi-indicator.grass-block{width:42px;height:42px;margin:2px;background:linear-gradient(150deg,#75df43 0 31%,#4ea82f 32% 38%,#8b552a 39% 100%);border:3px solid #101514;box-shadow:inset 0 0 0 3px #ffffff12,4px 4px 0 #392114}
+.kpi-indicator.grass-block:before{content:'';position:absolute;inset:14px 6px 6px 13px;background:repeating-linear-gradient(90deg,#6e401f 0 5px,#9a6130 6px 9px);transform:skewY(-26deg);border-left:2px solid #543017}
+.kpi-indicator.game-mode:before,.kpi-indicator.game-mode:after{content:'';position:absolute;left:20px;top:3px;width:7px;height:38px;background:linear-gradient(90deg,#6a4825,#d9bd72 45% 60%,#5a371d);transform:rotate(45deg);box-shadow:inset 2px 0 #f6e5a8}
+.kpi-indicator.game-mode:after{transform:rotate(-45deg);background:linear-gradient(90deg,#6d7476,#d4e0e2 45% 60%,#4d565a)}
+.kpi-indicator.difficulty:before{content:'';position:absolute;left:13px;top:5px;width:6px;height:6px;background:#e4e9e7;box-shadow:6px 0 #e4e9e7,12px 0 #e4e9e7,-6px 6px #e4e9e7,0 6px #e4e9e7,6px 6px #e4e9e7,12px 6px #e4e9e7,18px 6px #e4e9e7,-6px 12px #e4e9e7,0 12px #1a2022,6px 12px #e4e9e7,12px 12px #1a2022,18px 12px #e4e9e7,0 18px #e4e9e7,6px 18px #e4e9e7,12px 18px #e4e9e7,0 24px #e4e9e7,6px 24px #1a2022,12px 24px #e4e9e7;filter:drop-shadow(2px 2px #354043)}
+.kpi-indicator.difficulty:after{content:'';position:absolute;left:19px;top:24px;width:6px;height:6px;background:#1a2022;box-shadow:0 8px #e4e9e7}
+
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:15px;margin-top:18px}.profile-card{border:3px solid #303a3d;background:linear-gradient(135deg,#1d2427,#111618);box-shadow:inset 2px 2px #596264,inset -3px -3px #07090a;padding:13px}.profile-heading{display:flex;align-items:center;gap:11px;padding-bottom:12px;border-bottom:1px solid #3a4346}.profile-heading .player-avatar{width:54px;height:54px}.profile-heading>div{display:grid;gap:5px;min-width:0}.profile-heading b{font-size:19px;overflow:hidden;text-overflow:ellipsis}.profile-heading small{color:#aeb8bd}.profile-heading small:first-letter{color:#61d83e}.profile-heading em{margin-left:auto;font-style:normal;font:11px 'Press Start 2P',monospace;color:#ffda79;border:1px solid #b48629;padding:5px 4px}.profile-card dl{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:10px 0 0}.profile-card dl div{padding:8px 4px;border-bottom:1px solid #293135}.profile-card dt{color:#99a7af;font-size:13px}.profile-card dd{margin:3px 0 0;color:#f2f1ea;font-weight:700}.profile-empty{max-width:670px;padding:18px;border:2px solid #30393d;background:#111619;color:#b9c2c7}.profile-empty code{color:#80db59}.player-detail{min-height:calc(100vh - 220px)}
+@media(max-width:767px){.profile-card dl{grid-template-columns:1fr}.profile-heading b{font-size:16px}.player-detail{padding:15px}.profile-empty{font-size:14px}}
+
 /* Real player skin heads with a local pixel-face fallback when the public image is unavailable. */
 .player-avatar{position:relative;display:block;width:58px;height:52px;flex:none;background:#111;border:3px solid #111;box-shadow:inset 0 0 0 3px #ffffff11}
 .player-avatar .avatar{width:100%;height:100%;border:0;box-shadow:none}

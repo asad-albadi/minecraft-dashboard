@@ -6,6 +6,8 @@ All notable changes to this project are recorded here.
 
 ### Added
 
+- Added a read-only Players view sourced from live vanilla player cache, operator, and world-stat files, with play time, deaths, distance walked, mob kills, operator marker, and skin heads.
+- Replaced generic KPI glyph boxes with compact player, grass-block, crossed-tool, and difficulty indicators; refined the original pixel wordmark with a stone/iron texture.
 - Added the verified Minecraft server version from the read-only startup log to the online status badge.
 - Added per-player Minecraft skin-head rendering from the public player name, with an in-dashboard pixel-face fallback when the image is unavailable.
 

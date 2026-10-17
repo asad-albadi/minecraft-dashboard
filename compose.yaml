@@ -7,6 +7,8 @@ services:
       MINECRAFT_LOG_PATH: /minecraft/logs/latest.log
       MINECRAFT_WORLD_PATH: /minecraft/world
       MINECRAFT_PROPERTIES_PATH: /minecraft/server.properties
+      MINECRAFT_USERCACHE_PATH: /minecraft/usercache.json
+      MINECRAFT_OPS_PATH: /minecraft/ops.json
       RCON_ADDRESS: ${RCON_ADDRESS:-}
       RCON_PASSWORD: ${RCON_PASSWORD:-}
       MINECRAFT_CONTAINER_NAME: ${MINECRAFT_CONTAINER_NAME:-}
@@ -20,6 +22,8 @@ services:
       - ${MINECRAFT_LOG_PATH:-/dev/null}:/minecraft/logs/latest.log:ro
       - ${MINECRAFT_WORLD_PATH:-/dev/null}:/minecraft/world:ro
       - ${MINECRAFT_PROPERTIES_PATH:-/dev/null}:/minecraft/server.properties:ro
+      - ${MINECRAFT_USERCACHE_PATH:-/dev/null}:/minecraft/usercache.json:ro
+      - ${MINECRAFT_OPS_PATH:-/dev/null}:/minecraft/ops.json:ro
     networks: [default, minecraft]
   dashboard-frontend:
     build: ./frontend
