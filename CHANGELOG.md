@@ -17,6 +17,7 @@ All notable changes to this project are recorded here.
 
 ### Fixed
 
+- Normalized all exported dashboard icon tiles to a 174×174 canvas and corrected shifted action-tile crops that included neighboring artwork.
 - Allowed the lower dashboard row to grow for all quick actions instead of clipping the final controls on shorter desktop canvases.
 - Contained the desktop dashboard canvas within the viewport; only the server-console log now scrolls when content exceeds its panel.
 - Added dark carved-stone texture to unused desktop canvas space.
