@@ -26,9 +26,13 @@ The detailed profile cards are optional and read the live vanilla `usercache.jso
 
 First-seen, last-seen, and join-event fields additionally require `MINECRAFT_LOG_DIRECTORY` to point to the existing Minecraft logs directory. Archived `YYYY-MM-DD-*.log.gz` files provide the retained date history; `latest.log` contributes current-day joins. These fields are hidden when no usable log history is mounted.
 
-## The desktop dashboard does not scroll as a page
+## The desktop dashboard is clipped or a control is unreachable
 
-This is intentional. Desktop dashboards use a contained game-canvas layout; scroll the server-console log within its panel. Tablet and mobile layouts use normal page scrolling so controls remain reachable on narrow screens.
+The dashboard should reflow and allow normal page scrolling when the available desktop height is too short. Refresh the page after an update; if a control is still unreachable, rebuild the frontend image with `docker compose up -d --build dashboard-frontend` and confirm the newly created `dashboard-frontend` container is running with `docker compose ps`.
+
+## The dashboard still shows old icons or styling after a source update
+
+The Compose frontend is a built Nginx image, not a live Vite development server. Rebuild and recreate only the frontend with `docker compose up -d --build dashboard-frontend`, then use a hard refresh or add a temporary query string to the local URL. This does not rebuild, restart, or alter the Minecraft server or its data.
 
 ## The version badge says `Checking server…`
 
