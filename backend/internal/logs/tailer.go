@@ -1,0 +1,19 @@
+package logs
+
+import (
+	"bufio"
+	"os"
+	"regexp"
+	"strings"
+)
+
+var ipAddress = regexp.MustCompile(`\b(?:\d{1,3}\.){3}\d{1,3}\b`)
+var uuid = regexp.MustCompile(`\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b`)
+var coordinates = regexp.MustCompile(`\(-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?\)`)
+
+func Tail(path string, limit int) ([]string, error) {
+	file, err := os.Open(path); if err != nil { return nil, err }; defer file.Close()
+	lines := make([]string, 0, limit); scanner := bufio.NewScanner(file)
+	for scanner.Scan() { line := scanner.Text(); if strings.Contains(line, "RCON Client") || strings.Contains(line, "RCON Listener") { continue }; line = coordinates.ReplaceAllString(uuid.ReplaceAllString(ipAddress.ReplaceAllString(line, "<ip>"), "<uuid>"), "<coordinates>"); lines = append(lines, line); if len(lines) > limit { lines = lines[1:] } }
+	return lines, scanner.Err()
+}
