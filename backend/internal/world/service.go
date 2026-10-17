@@ -91,11 +91,17 @@ func masked(value string) string {
 }
 
 var timePattern = regexp.MustCompile(`(?i)time is:?\s+(\d+)`)
+var timelinePattern = regexp.MustCompile(`(?i)timeline\s+minecraft:day\s+is\s+at\s+(\d+)\s+tick`)
 
 // ParseMinecraftTime converts the vanilla `time query daytime` response into
 // Minecraft's 24-hour clock. Minecraft tick zero is 06:00, not midnight.
 func ParseMinecraftTime(response string) (day, clock string, ok bool) {
 	match := timePattern.FindStringSubmatch(response)
+	timeline := false
+	if match == nil {
+		match = timelinePattern.FindStringSubmatch(response)
+		timeline = true
+	}
 	if match == nil {
 		return "", "", false
 	}
@@ -103,7 +109,9 @@ func ParseMinecraftTime(response string) (day, clock string, ok bool) {
 	if err != nil || ticks < 0 {
 		return "", "", false
 	}
-	day = fmt.Sprintf("Day %d", ticks/24000)
+	if !timeline {
+		day = fmt.Sprintf("Day %d", ticks/24000)
+	}
 	clockTicks := (ticks + 6000) % 24000
 	hours := clockTicks / 1000
 	minutes := (clockTicks % 1000) * 60 / 1000

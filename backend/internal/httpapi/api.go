@@ -69,7 +69,7 @@ func (a *API) world(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusServiceUnavailable).JSON(fiber.Map{"error": "world metadata unavailable"})
 	}
-	if response, err := a.RCON.Command(c.Context(), "time query daytime"); err == nil {
+	if response, err := a.RCON.Command(c.Context(), "time query day"); err == nil {
 		if day, clock, ok := world.ParseMinecraftTime(response); ok {
 			metadata.Day, metadata.Time = day, clock
 		}

@@ -15,6 +15,7 @@ All notable changes to this project are recorded here.
 - Reworked the dashboard’s visual primitives with original stepped voxel blockwork, lantern glow, grass-cube branding, pixel-face avatars, inset console texture, and heavier stone bevels to more closely match the supplied visual reference.
 - Matched the 1536×960 reference composition more closely with a measured 350 px utility rail, expanded center canvas, fixed-height desktop shell, non-wrapping panel headers, and a visible in-frame footer.
 - Kept the desktop reference composition as a large-screen calibration while allowing normal document scrolling at constrained heights.
+- Replaced unsupported TPS, memory, uptime, seed, and weather placeholders with verified world metadata; added live Minecraft time for the server's current vanilla clock syntax.
 - Bun/Vite/React pixel-themed dashboard shell matching the supplied desktop composition and adapting for tablet/mobile.
 - Go/Fiber API skeleton with health, capability, read-only placeholder data, and safety-gated mutation routes.
 - Safe Minecraft `tellraw` JSON command construction with tests for escaping and control-character rejection.

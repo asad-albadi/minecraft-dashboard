@@ -35,6 +35,13 @@ func TestParseMinecraftTime(t *testing.T) {
 	}
 }
 
+func TestParseMinecraftTimelineTime(t *testing.T) {
+	day, clock, ok := ParseMinecraftTime("Timeline minecraft:day is at 9107 tick(s)")
+	if !ok || day != "" || clock != "15:06" {
+		t.Fatalf("unexpected timeline time: day=%q clock=%q ok=%v", day, clock, ok)
+	}
+}
+
 func TestParseWeather(t *testing.T) {
 	weather, ok := ParseWeather("The weather is: clear")
 	if !ok || weather != "Clear Skies" {
