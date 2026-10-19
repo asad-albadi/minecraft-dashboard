@@ -8,6 +8,7 @@ import (
 )
 
 var ipAddress = regexp.MustCompile(`\b(?:\d{1,3}\.){3}\d{1,3}\b`)
+var ipv6Address = regexp.MustCompile(`(?i)(?:[0-9a-f]{0,4}:){2,}[0-9a-f]{0,4}`)
 var uuid = regexp.MustCompile(`\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b`)
 var coordinates = regexp.MustCompile(`\(-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?\)`)
 var serverVersion = regexp.MustCompile(`Starting minecraft server version ([^\s]+)`)
@@ -26,7 +27,7 @@ func Tail(path string, limit int) ([]string, error) {
 		if strings.Contains(line, "RCON Client") || strings.Contains(line, "RCON Listener") {
 			continue
 		}
-		line = coordinates.ReplaceAllString(uuid.ReplaceAllString(ipAddress.ReplaceAllString(line, "<ip>"), "<uuid>"), "<coordinates>")
+		line = coordinates.ReplaceAllString(uuid.ReplaceAllString(ipv6Address.ReplaceAllString(ipAddress.ReplaceAllString(line, "<ip>"), "<ip>"), "<uuid>"), "<coordinates>")
 		lines = append(lines, line)
 		if len(lines) > limit {
 			lines = lines[1:]

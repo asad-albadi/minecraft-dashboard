@@ -14,31 +14,35 @@ import (
 	"minecraft-dashboard/backend/internal/rcon"
 	"minecraft-dashboard/backend/internal/world"
 	"net/http"
-	"time"
 )
 
 type API struct {
 	Config       config.Config
 	Capabilities capabilities.Snapshot
 	RCON         *rcon.Client
+	Events       *eventBroker
 }
 
 func New(c config.Config) *API {
-	return &API{Config: c, Capabilities: capabilities.SnapshotFor(c), RCON: rcon.New(c.RCONAddress, c.RCONPassword, c.RCONTimeout)}
+	api := &API{Config: c, Capabilities: capabilities.SnapshotFor(c), RCON: rcon.New(c.RCONAddress, c.RCONPassword, c.RCONTimeout), Events: newEventBroker(25)}
+	go api.pollEvents()
+	return api
 }
 func (a *API) Register(app *fiber.App) {
 	app.Get("/api/v1/health", func(c *fiber.Ctx) error { return c.JSON(fiber.Map{"ok": true}) })
-	app.Get("/api/v1/capabilities", func(c *fiber.Ctx) error { return c.JSON(a.Capabilities) })
-	app.Get("/api/v1/status", a.status)
-	app.Get("/api/v1/metrics", func(c *fiber.Ctx) error { return c.JSON(fiber.Map{"tps": nil, "memory": nil, "uptime": nil}) })
-	app.Get("/api/v1/players", a.players)
-	app.Get("/api/v1/player-profiles", a.playerProfiles)
-	app.Get("/api/v1/world", a.world)
-	app.Get("/api/v1/logs", a.logs)
-	app.Post("/api/v1/chat/messages", a.chat)
-	app.Post("/api/v1/console/commands", a.unavailable("console"))
-	app.Post("/api/v1/server/:operation", a.unavailable("lifecycle"))
-	app.Get("/api/v1/events", a.events)
+	app.Post("/api/v1/session", a.login)
+	api := app.Group("/api/v1", a.requireSession)
+	api.Get("/capabilities", func(c *fiber.Ctx) error { return c.JSON(a.Capabilities) })
+	api.Get("/status", a.status)
+	api.Get("/metrics", func(c *fiber.Ctx) error { return c.JSON(fiber.Map{"tps": nil, "memory": nil, "uptime": nil}) })
+	api.Get("/players", a.players)
+	api.Get("/player-profiles", a.playerProfiles)
+	api.Get("/world", a.world)
+	api.Get("/logs", a.logs)
+	api.Post("/chat/messages", a.chat)
+	api.Post("/console/commands", a.unavailable("console"))
+	api.Post("/server/:operation", a.unavailable("lifecycle"))
+	api.Get("/events", a.events)
 }
 func (a *API) status(c *fiber.Ctx) error {
 	return c.JSON(a.statusPayload(c.Context()))
@@ -63,27 +67,21 @@ func (a *API) withVersion(payload fiber.Map) fiber.Map {
 }
 
 func (a *API) events(c *fiber.Ctx) error {
+	subscriber, cancel, ok := a.Events.subscribe()
+	if !ok {
+		c.Set(fiber.HeaderRetryAfter, "30")
+		return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{"error": "too many event connections"})
+	}
 	c.Set(fiber.HeaderContentType, "text/event-stream")
 	c.Set(fiber.HeaderCacheControl, "no-cache")
 	c.Set(fiber.HeaderConnection, "keep-alive")
 	c.Context().SetBodyStreamWriter(func(writer *bufio.Writer) {
-		previous := a.logTail()
-		if !writeEvent(writer, "connection.state", fiber.Map{"state": "connected"}) || !writeEvent(writer, "server.status", a.statusPayload(context.Background())) {
+		defer cancel()
+		if !writeEvent(writer, "connection.state", fiber.Map{"state": "connected"}) {
 			return
 		}
-
-		ticker := time.NewTicker(time.Second)
-		defer ticker.Stop()
-		for tick := 1; ; tick++ {
-			<-ticker.C
-			current := a.logTail()
-			for _, line := range logs.NewLines(previous, current) {
-				if !writeEvent(writer, "console.line", fiber.Map{"line": line}) {
-					return
-				}
-			}
-			previous = current
-			if tick%15 == 0 && !writeEvent(writer, "server.status", a.statusPayload(context.Background())) {
+		for event := range subscriber {
+			if !writeEvent(writer, event.name, event.payload) {
 				return
 			}
 		}

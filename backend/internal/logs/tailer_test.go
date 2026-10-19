@@ -1,6 +1,8 @@
 package logs
 
 import (
+	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 )
@@ -35,5 +37,21 @@ func TestServerVersionReturnsTheLatestStartupVersion(t *testing.T) {
 
 	if got := ServerVersion(lines); got != "1.21.5" {
 		t.Fatalf("ServerVersion() = %q, want %q", got, "1.21.5")
+	}
+}
+
+func TestTailRedactsIPv6Addresses(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "latest.log")
+	line := "[12:00] [Server thread/INFO]: Alex[/[2001:db8:85a3::8a2e:370:7334]:25565] logged in"
+	if err := os.WriteFile(path, []byte(line+"\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	lines, err := Tail(path, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(lines) != 1 || lines[0] != "[12:00] [Server thread/INFO]: Alex[/[<ip>]:25565] logged in" {
+		t.Fatalf("Tail() = %#v, expected IPv6 address to be redacted", lines)
 	}
 }

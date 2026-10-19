@@ -12,6 +12,10 @@ They require explicit private configuration. Set the applicable values in an ign
 
 In development, run the Go backend on port 8080 and Vite proxies `/api` requests. In Compose, the Nginx frontend proxies `/api` to `dashboard-backend`. Confirm both services are running with `docker compose ps` and use the frontend’s localhost port 8081.
 
+## The dashboard asks for an access secret
+
+Set a long random `SESSION_SECRET` in the ignored `.env` file, rebuild the backend, and enter that value in the dashboard’s local access screen. The backend now requires this signed, HttpOnly session before it returns server logs, player data, world metadata, or live events. Do not expose the dashboard through an unauthenticated reverse proxy.
+
 ## The console says `RECONNECTING` or does not update live
 
 The dashboard uses a same-origin Server-Sent Events (SSE) connection at `/api/v1/events` for read-only status and sanitized log updates. Confirm the backend is reachable through the frontend proxy and that no reverse proxy is buffering `text/event-stream` responses. The browser reconnects automatically; a persistent `RECONNECTING` label means the event endpoint is unavailable or the network path is interrupting the stream. Initial console history still loads from the read-only log-tail endpoint.

@@ -6,6 +6,7 @@ All notable changes to this project are recorded here.
 
 ### Added
 
+- Added authenticated, signed dashboard sessions for all server data and live-event routes, with a local access screen.
 - Replaced the header’s raster overview tile with the supplied scalable Minecraft grass-block SVG mark.
 - Extended the supplied icon system to every displayed dashboard control and indicator, including the hero world marker, status, player signal, console submit control, and detail navigation.
 - Replaced the generated dashboard icon sheet with individually cropped, role-mapped tiles from the supplied labeled icon artwork across navigation, live-status/console headings, stats, world metadata, weather, and quick actions.
@@ -19,6 +20,7 @@ All notable changes to this project are recorded here.
 
 ### Fixed
 
+- Redacted IPv6 addresses from exported Minecraft log lines and changed SSE delivery to a shared, capped event broker.
 - Restored the fixed desktop dashboard canvas; console and chat histories now scroll only within the server-console panel.
 - Anchored the overview hero identity to its bottom-left corner and kept the server name on one desktop line.
 - Removed the standalone page header and centered the server name, online state, and verified Java version inside the overview hero card.
