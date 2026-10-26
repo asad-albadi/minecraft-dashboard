@@ -2,7 +2,10 @@ module minecraft-dashboard/backend
 
 go 1.22
 
-require github.com/gofiber/fiber/v2 v2.52.6
+require (
+	github.com/gofiber/fiber/v2 v2.52.6
+	golang.org/x/crypto v0.31.0
+)
 
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect

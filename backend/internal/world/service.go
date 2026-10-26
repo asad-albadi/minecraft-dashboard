@@ -8,19 +8,25 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
+	"time"
 )
 
 type Metadata struct {
-	Name       string `json:"name"`
-	GameMode   string `json:"gameMode"`
-	Difficulty string `json:"difficulty"`
-	Seed       string `json:"seed"`
-	Dimension  string `json:"dimension"`
-	Size       string `json:"size"`
-	LastBackup string `json:"lastBackup"`
-	Day        string `json:"day,omitempty"`
-	Time       string `json:"time,omitempty"`
-	Weather    string `json:"weather,omitempty"`
+	Hardcore    string            `json:"hardcore"`
+	Generator   string            `json:"generator"`
+	Dimensions  map[string]string `json:"dimensions"`
+	CollectedAt time.Time         `json:"collectedAt"`
+	Name        string            `json:"name"`
+	GameMode    string            `json:"gameMode"`
+	Difficulty  string            `json:"difficulty"`
+	Seed        string            `json:"seed"`
+	Dimension   string            `json:"dimension"`
+	Size        string            `json:"size"`
+	LastBackup  string            `json:"lastBackup"`
+	Day         string            `json:"day,omitempty"`
+	Time        string            `json:"time,omitempty"`
+	Weather     string            `json:"weather,omitempty"`
 }
 
 func ReadMetadata(propertiesPath, worldPath string) (Metadata, error) {
@@ -32,7 +38,60 @@ func ReadMetadata(propertiesPath, worldPath string) (Metadata, error) {
 	if err != nil {
 		return Metadata{}, err
 	}
-	return Metadata{Name: values["level-name"], GameMode: title(values["gamemode"]), Difficulty: title(values["difficulty"]), Seed: masked(values["level-seed"]), Dimension: "Primary World: Overworld", Size: humanBytes(size), LastBackup: "Never"}, nil
+	hardcore := "Unknown"
+	switch values["hardcore"] {
+	case "true":
+		hardcore = "Enabled"
+	case "false":
+		hardcore = "Disabled"
+	}
+	generator := values["level-type"]
+	if generator == "" {
+		generator = "Unknown"
+	}
+	dimensions := map[string]string{}
+	for name, sub := range map[string]string{"Overworld": "region", "Nether": "DIM-1", "The End": "DIM1"} {
+		if n, e := directorySize(filepath.Join(worldPath, sub)); e == nil {
+			dimensions[name] = humanBytes(n)
+		} else {
+			dimensions[name] = "Unavailable"
+		}
+	}
+	return Metadata{Name: values["level-name"], GameMode: title(values["gamemode"]), Difficulty: title(values["difficulty"]), Seed: masked(values["level-seed"]), Dimension: "Primary World: Overworld", Size: humanBytes(size), LastBackup: "Unknown", Hardcore: hardcore, Generator: generator, Dimensions: dimensions, CollectedAt: time.Now().UTC()}, nil
+}
+
+// Cache bounds filesystem collection to the configured TTL. Failed collection
+// is cached too, avoiding repeated scans of unavailable mounts on every request.
+type Cache struct {
+	mu                sync.Mutex
+	properties, world string
+	ttl               time.Duration
+	next              time.Time
+	value             Metadata
+	err               error
+}
+
+func NewCache(properties, world string, ttl time.Duration) *Cache {
+	if ttl <= 0 {
+		ttl = time.Minute
+	}
+	return &Cache{properties: properties, world: world, ttl: ttl}
+}
+func (c *Cache) Get() (Metadata, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if time.Now().After(c.next) {
+		c.value, c.err = ReadMetadata(c.properties, c.world)
+		c.next = time.Now().Add(c.ttl)
+	}
+	v := c.value
+	if v.Dimensions != nil {
+		v.Dimensions = map[string]string{}
+		for k, s := range c.value.Dimensions {
+			v.Dimensions[k] = s
+		}
+	}
+	return v, c.err
 }
 func readProperties(path string) (map[string]string, error) {
 	file, err := os.Open(path)
@@ -58,7 +117,7 @@ func directorySize(path string) (int64, error) {
 		if err != nil {
 			return err
 		}
-		if !info.IsDir() {
+		if info.Mode().IsRegular() {
 			total += info.Size()
 		}
 		return nil
@@ -97,10 +156,8 @@ var timelinePattern = regexp.MustCompile(`(?i)timeline\s+minecraft:day\s+is\s+at
 // Minecraft's 24-hour clock. Minecraft tick zero is 06:00, not midnight.
 func ParseMinecraftTime(response string) (day, clock string, ok bool) {
 	match := timePattern.FindStringSubmatch(response)
-	timeline := false
 	if match == nil {
 		match = timelinePattern.FindStringSubmatch(response)
-		timeline = true
 	}
 	if match == nil {
 		return "", "", false
@@ -109,13 +166,24 @@ func ParseMinecraftTime(response string) (day, clock string, ok bool) {
 	if err != nil || ticks < 0 {
 		return "", "", false
 	}
-	if !timeline {
-		day = fmt.Sprintf("Day %d", ticks/24000)
-	}
-	clockTicks := (ticks + 6000) % 24000
+	// Neither daytime nor timeline ticks establish world age.
+	clockTicks := (ticks%24000 + 6000) % 24000
 	hours := clockTicks / 1000
 	minutes := (clockTicks % 1000) * 60 / 1000
 	return day, fmt.Sprintf("%02d:%02d", hours, minutes), true
+}
+
+// ParseMinecraftDay must only receive a `time query day` response.
+func ParseMinecraftDay(response string) (string, bool) {
+	m := timePattern.FindStringSubmatch(response)
+	if m == nil {
+		return "", false
+	}
+	n, e := strconv.ParseUint(m[1], 10, 64)
+	if e != nil {
+		return "", false
+	}
+	return fmt.Sprintf("Day %d", n), true
 }
 
 // ParseWeather accepts only the vanilla weather query values, so an

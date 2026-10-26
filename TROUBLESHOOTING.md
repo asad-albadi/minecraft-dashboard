@@ -1,65 +1,47 @@
 # Troubleshooting
 
-## The dashboard says `UNKNOWN` or metrics are unavailable
+## Accounts are not configured (HTTP 503)
 
-This is expected until a verified status/metrics adapter is configured. The dashboard intentionally does not invent online state, player counts, TPS, memory, or world metadata. Check the dashboard backend logs and the configured private Minecraft host/path values.
+Shared access-secret login was replaced with named admin/viewer accounts. SESSION_SECRET is now a signing key of at least 32 bytes, not a password. Generate the private account file and configure its read-only mount as described in [setup](docs/setup.md). The file must be regular JSON, mode 0600/0400, readable by the backend UID, with unique valid account records and supported Argon2id hashes. Never loosen Minecraft source permissions to solve dashboard access. Restart only dashboard-backend after editing accounts.
 
-## Quick actions or Chat/Console are disabled
+## Login rejected, missing cookie, or HTTP 403/429
 
-They require explicit private configuration. Set the applicable values in an ignored `.env` file based on `.env.example`; never commit it. RCON must be reachable only from the backend on a private network. Lifecycle management additionally requires a narrowly scoped helper for the one configured Minecraft container — do not mount an unrestricted Docker socket.
+Use the frontend origin, not the backend port. Cookie Secure must be false only for localhost HTTP. For HTTPS use true and the exact DASHBOARD_PUBLIC_ORIGIN, without trailing slash. Login/logout/actions require Origin matching that value and JSON Content-Type. Five login attempts per source IP per minute are allowed; through the supplied proxy the limit is shared. Wait one minute after a 429. Session expiry, logout or backend restart requires signing in again.
 
-## Frontend cannot reach the API
+## Unknown state or unavailable metrics
 
-In development, run the Go backend on port 8080 and Vite proxies `/api` requests. In Compose, the Nginx frontend proxies `/api` to `dashboard-backend`. Confirm both services are running with `docker compose ps` and use the frontend’s localhost port 8081.
+A failed RCON connection is not proof that Minecraft is offline. Java status ping and RCON are checked independently; when neither confirms reachability, state is Unknown. Set MINECRAFT_HOST (no scheme or port), MINECRAFT_PORT and the correct existing MINECRAFT_NETWORK. Do not expose private RCON or change the Minecraft container. CPU/memory/uptime/TPS/MSPT are unavailable without a reliable restricted metrics adapter.
 
-## The dashboard asks for an access secret
+## Chat / console / server controls are disabled
 
-Set a long random `SESSION_SECRET` in the ignored `.env` file, rebuild the backend, and enter that value in the dashboard’s local access screen. The backend now requires this signed, HttpOnly session before it returns server logs, player data, world metadata, or live events. Do not expose the dashboard through an unauthenticated reverse proxy.
+Viewer accounts cannot send actions. Admin chat requires DASHBOARD_ENABLE_CHAT=true; the restricted read-only console requires DASHBOARD_ENABLE_CONSOLE=true. Both require private RCON and writable dedicated audit storage. No toggle enables lifecycle, player/world mutations, backup writes or restore. An audit error before sending prevents delivery; a post-send failure reports unknown delivery, so check before retrying.
 
-## The console says `RECONNECTING` or does not update live
+## API unavailable or old UI still displayed
 
-The dashboard uses a same-origin Server-Sent Events (SSE) connection at `/api/v1/events` for read-only status and sanitized log updates. Confirm the backend is reachable through the frontend proxy and that no reverse proxy is buffering `text/event-stream` responses. The browser reconnects automatically; a persistent `RECONNECTING` label means the event endpoint is unavailable or the network path is interrupting the stream. Initial console history still loads from the read-only log-tail endpoint.
+Vite proxies /api to localhost:8080. Compose Nginx proxies to dashboard-backend:8080. Run docker compose ps. Rebuild only dashboard services with docker compose up -d --build dashboard-backend dashboard-frontend, then refresh the browser. This never restarts Minecraft.
 
-## A player portrait shows the fallback face
+## Console reconnects or history is missing
 
-The player panel requests a public Minecraft head render by the public in-game name and uses the dashboard's built-in pixel face if that service is offline, blocked, or has no skin for the name. This affects only the browser image; it does not change, read, or expose Minecraft player-data files.
+Nginx and any upstream proxy must not buffer text/event-stream. The shared SSE endpoint emits ordered console.snapshot events, so polling cannot duplicate a streamed line. The console retains 500 lines; reads are bounded and exceptionally long lines are dropped. Empty/unreadable log sources are unavailable, not fabricated output. On startup the bounded tail is reconciled against the latest retained event; entries outside that window during downtime cannot be recovered, and identical dateless lines across rotations can be ambiguous.
 
-## The Players view is empty
+Activity/chat history needs a writable, dedicated DASHBOARD_DATA_PATH (Compose uses /var/lib/minecraft-dashboard). It must not overlap any source path or contain symlinks. A corrupt history.json is not overwritten; preserve a copy, inspect it offline and restore a known-good dashboard snapshot. Invalid storage falls back to memory and is reported in Settings. Audit storage failures prevent enabled actions.
 
-The detailed profile cards are optional and read the live vanilla `usercache.json`, `ops.json`, and existing world `players/stats/*.json` sources. Set `MINECRAFT_USERCACHE_PATH` and `MINECRAFT_OPS_PATH` in the ignored `.env` file and recreate the dashboard backend. The dashboard intentionally omits UUIDs and exact locations, and every source mount is read only.
+## Player stats or advancements are Unknown
 
-First-seen, last-seen, and join-event fields additionally require `MINECRAFT_LOG_DIRECTORY` to point to the existing Minecraft logs directory. Archived `YYYY-MM-DD-*.log.gz` files provide the retained date history; `latest.log` contributes current-day joins. These fields are hidden when no usable log history is mounted.
+Sources are read from standard world/stats and world/advancements, with legacy world/players paths supported. All source mounts are read-only. Unknown missing keys are not zero. UUIDs are visible to authenticated users; precise positions are not exposed. First/last seen and joins reflect only retained recognizable logs. Date-only observations remain server dates, not converted fictitious timestamps. Malformed/oversized files, symlinked descendants and unsafe UUIDs are rejected. Public skin images may fall back to local artwork when mc-heads.net is blocked.
 
-## The desktop dashboard is clipped or a control is unreachable
+## World time, weather or version is unavailable
 
-The dashboard should reflow and allow normal page scrolling when the available desktop height is too short. Refresh the page after an update; if a control is still unreachable, rebuild the frontend image with `docker compose up -d --build dashboard-frontend` and confirm the newly created `dashboard-frontend` container is running with `docker compose ps`.
+Status ping supplies the version when reachable; retained startup logs are a fallback. Vanilla command/version differences are expected. The dashboard queries daytime separately from day count; unsupported responses remain unavailable. Weather is never inferred from a previous weather-setting command. Size/dimensions refresh at most once per five minutes; static properties are labeled configured, not live.
 
-## The dashboard still shows old icons or styling after a source update
+## Backup catalog unavailable
 
-The Compose frontend is a built Nginx image, not a live Vite development server. Rebuild and recreate only the frontend with `docker compose up -d --build dashboard-frontend`, then use a hard refresh or add a temporary query string to the local URL. This does not rebuild, restart, or alter the Minecraft server or its data.
+Set an explicit backup source mount on the dashboard backend and its container path in DASHBOARD_BACKUP_PATH. Listing is read-only, skips symlinks and rejects directories above 1000 entries. File presence is not integrity or consistency. See [backup runbook](docs/backups.md).
 
-## The version badge says `Checking server…`
+## Desktop controls or console appear clipped
 
-The badge reads the latest vanilla startup version from the configured read-only Minecraft log. It remains in its neutral loading state until a matching `Starting minecraft server version …` line is available; restart the dashboard after correcting a missing or unreadable log mount.
+Desktop page scrolling is intentionally disabled. Detail pages, lower cards and console scroll inside their panels; short desktops allow the center column to scroll internally. Tablet/mobile pages reflow. Hard refresh after rebuilding the frontend. Keyboard focus can reach all scroll areas and controls.
 
-## Backend cannot reach the Minecraft `mc` service
+## Recovery
 
-The dashboard Compose stack joins the existing external `minecraft_default` Docker network so the backend can use the Minecraft service alias `mc` and its private RCON port. Confirm the Minecraft stack is running and that the network exists with `docker network inspect minecraft_default`. Do not publish port `25575` to the host or internet.
-
-## World fields are unavailable
-
-Set both `MINECRAFT_WORLD_PATH` and `MINECRAFT_PROPERTIES_PATH` in the ignored `.env` file to the existing host paths. Compose mounts them read-only inside the dashboard container; it never changes the world files. The seed is intentionally masked by default.
-
-Minecraft time requires the configured private RCON account to accept the server's vanilla read-only clock command. This deployment uses `time query day`; older releases may use `time query daytime`. Its current vanilla command set does not expose a read-only weather query, so weather is hidden rather than guessed. Verify a server's command response from a trusted Minecraft administrator session before adding a compatibility adapter.
-
-## Docker Compose reports missing or empty configuration
-
-Copy `.env.example` to `.env`, fill only the integrations you have explicitly approved, and keep it outside version control. Blank optional settings are valid; they disable the matching capability safely.
-
-## A container build fails because a local toolchain is missing
-
-The Dockerfiles supply the Bun and Go build environments. Run `docker build ./frontend` or `docker build ./backend` to verify builds without installing either tool locally.
-
-## Recovery and rollback
-
-Stopping the dashboard stack is safe: `docker compose down`. It does not own or alter Minecraft volumes. Before enabling real backup/restore support, test restoration against a separate copy of the world and retain a verified pre-restore safety copy.
+Stop only the dashboard stack with docker compose down. Preserve dashboard-owned history/audit data for rollback. Never remove Minecraft volumes, mount over world data or test restoration against the live world.

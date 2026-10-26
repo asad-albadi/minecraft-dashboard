@@ -7,12 +7,12 @@ import (
 	"testing"
 
 	"github.com/gofiber/fiber/v2"
-	"minecraft-dashboard/backend/internal/config"
 )
 
 func TestReadOnlyRoutesRequireASession(t *testing.T) {
 	app := fiber.New()
-	New(config.Config{SessionSecret: "test-access-secret"}).Register(app)
+	a, _ := accountTestApp(t, "viewer")
+	a.Register(app)
 
 	request := httptest.NewRequest(http.MethodGet, "/api/v1/logs", nil)
 	response, err := app.Test(request)
@@ -27,10 +27,12 @@ func TestReadOnlyRoutesRequireASession(t *testing.T) {
 
 func TestSessionLoginAuthorizesReadOnlyRoutes(t *testing.T) {
 	app := fiber.New()
-	New(config.Config{SessionSecret: "test-access-secret"}).Register(app)
+	a, _ := accountTestApp(t, "viewer")
+	a.Register(app)
 
-	login := httptest.NewRequest(http.MethodPost, "/api/v1/session", bytes.NewBufferString(`{"password":"test-access-secret"}`))
+	login := httptest.NewRequest(http.MethodPost, "/api/v1/session", bytes.NewBufferString(`{"username":"alex","password":"correct-password"}`))
 	login.Header.Set("Content-Type", "application/json")
+	login.Header.Set("Origin", "https://dashboard.test")
 	loginResponse, err := app.Test(login)
 	if err != nil {
 		t.Fatal(err)

@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 )
 
 func TestReadMetadataUsesVerifiedServerPropertiesAndWorldSize(t *testing.T) {
@@ -30,8 +31,30 @@ func TestReadMetadataUsesVerifiedServerPropertiesAndWorldSize(t *testing.T) {
 
 func TestParseMinecraftTime(t *testing.T) {
 	day, clock, ok := ParseMinecraftTime("The time is: 18475")
-	if !ok || day != "Day 0" || clock != "00:28" {
+	if !ok || day != "" || clock != "00:28" {
 		t.Fatalf("unexpected parsed time: day=%q clock=%q ok=%v", day, clock, ok)
+	}
+}
+
+func TestCacheRetainsCollectedMetadataUntilExpiry(t *testing.T) {
+	d := t.TempDir()
+	p := filepath.Join(d, "server.properties")
+	os.WriteFile(p, []byte("level-name=first\nhardcore=true\nlevel-type=minecraft:normal\n"), 0600)
+	c := NewCache(p, d, time.Hour)
+	a, err := c.Get()
+	if err != nil {
+		t.Fatal(err)
+	}
+	os.WriteFile(p, []byte("level-name=second\n"), 0600)
+	b, err := c.Get()
+	if err != nil || b.Name != "first" || a.CollectedAt.IsZero() || a.LastBackup != "Unknown" || a.Hardcore != "Enabled" || a.Generator != "minecraft:normal" {
+		t.Fatalf("%+v %v", a, err)
+	}
+}
+
+func TestParseDayIsNotDaytime(t *testing.T) {
+	if day, ok := ParseMinecraftDay("The time is 12"); !ok || day != "Day 12" {
+		t.Fatalf("%q %v", day, ok)
 	}
 }
 

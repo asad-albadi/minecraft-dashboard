@@ -63,20 +63,68 @@ func (b *eventBroker) publish(event dashboardEvent) {
 func (a *API) pollEvents() {
 	ticker := time.NewTicker(time.Second)
 	defer ticker.Stop()
-	previous := a.logTail()
+	reader := logs.NewReader(a.Config.LogPath, 500)
+	defer reader.Close()
+	initial := true
 	for tick := 1; ; tick++ {
-		<-ticker.C
-		if !a.Events.hasSubscribers() {
-			previous = a.logTail()
+		select {
+		case <-a.stop:
+			return
+		case <-ticker.C:
+		}
+		if a.Config.LogPath == "" {
 			continue
 		}
-		current := a.logTail()
-		for _, line := range logs.NewLines(previous, current) {
+		current, err := reader.Next()
+		a.logMu.Lock()
+		a.logError = err != nil
+		a.logMu.Unlock()
+		if err == nil {
+			a.recordLines(current)
+			var e error
+			if initial {
+				e = a.History.Reconcile(current)
+			} else {
+				e = a.History.Append(current)
+			}
+			if e != nil {
+				a.logMu.Lock()
+				a.historyError = true
+				a.logMu.Unlock()
+			}
+			initial = false
+		}
+		for _, line := range current {
 			a.Events.publish(dashboardEvent{name: "console.line", payload: map[string]string{"line": line}})
 		}
-		previous = current
-		if tick%15 == 0 {
+		if len(current) > 0 {
+			a.Events.publish(dashboardEvent{name: "console.snapshot", payload: a.consoleSnapshot()})
+		}
+		if tick%15 == 0 && a.Events.hasSubscribers() {
 			a.Events.publish(dashboardEvent{name: "server.status", payload: a.statusPayload(context.Background())})
 		}
 	}
+}
+
+type consoleSnapshot struct {
+	Sequence uint64   `json:"sequence"`
+	Lines    []string `json:"lines"`
+}
+
+func (a *API) recordLines(lines []string) {
+	if len(lines) == 0 {
+		return
+	}
+	a.logMu.Lock()
+	defer a.logMu.Unlock()
+	a.lines = append(a.lines, lines...)
+	if len(a.lines) > 500 {
+		a.lines = a.lines[len(a.lines)-500:]
+	}
+	a.logSequence++
+}
+func (a *API) consoleSnapshot() consoleSnapshot {
+	a.logMu.RLock()
+	defer a.logMu.RUnlock()
+	return consoleSnapshot{a.logSequence, append([]string{}, a.lines...)}
 }

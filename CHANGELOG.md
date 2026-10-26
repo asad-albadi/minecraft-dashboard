@@ -4,6 +4,15 @@ All notable changes to this project are recorded here.
 
 ## [Unreleased]
 
+### General-purpose dashboard
+
+- Replaced family-specific branding with a configurable server name and generic documentation.
+- Added separate named admin/viewer accounts, Argon2id password hashing, expiring revocable sessions, same-origin checks and bounded login throttling; old shared-secret logins no longer work.
+- Added real World, Console, Backups and Settings views; searchable/sortable player profiles, saved vanilla statistics and advancements; browser-local display preferences.
+- Added independent Java status ping, cached world measurements, incremental rotation-aware logs, persistent bounded chat/activity history and optional audited admin chat/read-only console commands (disabled by default).
+- Corrected IPv6 redaction that corrupted log timestamps, unknown-data fallbacks and Minecraft day/time interpretation. Desktop panels scroll internally without extending the viewport.
+- Backup integrity remains Unknown; lifecycle, restoration, unsafe world writes and unsupported metrics remain unavailable.
+
 ### Added
 
 - Added authenticated, signed dashboard sessions for all server data and live-event routes, with a local access screen.
