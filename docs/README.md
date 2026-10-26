@@ -1,23 +1,11 @@
 # Documentation
 
-- [Implementation plan](superpowers/plans/2026-10-17-minecraft-dashboard.md) — planned architecture, safety constraints, and verification tasks.
-- [Troubleshooting](../TROUBLESHOOTING.md) — deployment and integration diagnosis.
-- [Contributor guide](../AGENTS.md) — operating rules for developers and agents.
+- [Setup and account security](setup.md)
+- [Backup and restore boundaries](backups.md)
+- [Implemented features and remaining integrations](feature-coverage.md)
+- [Current implementation plan](implementation-plan.md)
+- [Troubleshooting](../TROUBLESHOOTING.md)
+- [Contributor rules](../AGENTS.md)
+- [Product vision](../MINECRAFT_DASHBOARD_SPEC.md)
 
-## Live read-only updates
-
-`GET /api/v1/events` is a Server-Sent Events endpoint. It emits `connection.state`, `server.status`, and `console.line` events. Console events are taken from the existing read-only log path, passed through the same sanitization and RCON-noise filtering as the log-tail endpoint, and deduplicated across normal appends. On a log rotation the fresh sanitized tail is emitted so the dashboard resumes observing the replacement log. The endpoint never accepts commands and does not expose RCON credentials or host access.
-
-## Player portraits
-
-The browser renders an online player's public skin head from their public Minecraft name and sends no RCON credential or local player-data request to that image service. A CSS pixel-face remains beneath the image as a fallback for offline, missing, or blocked portraits.
-
-## Live player profiles
-
-Set `MINECRAFT_USERCACHE_PATH` and `MINECRAFT_OPS_PATH` to the existing vanilla server files to enable the **Players** route. Compose mounts those files and the existing configured world directory read-only. The backend combines the Minecraft user cache, operator list, and `world/players/stats/*.json` to return player name, operator status, play time, deaths, walked distance, and mob kills. When `MINECRAFT_LOG_DIRECTORY` points at retained `*.log.gz` files and `latest.log`, it also derives first-seen date, last-seen date, and join count from actual login lines. It does not expose UUIDs or locations, and never changes the source data.
-
-## Server version
-
-The online status badge reports the latest version found in a vanilla `Starting minecraft server version …` startup-log line. This is read from the existing read-only log mount; it does not require a mutating RCON command or access to Minecraft data volumes.
-
-Keep detailed architecture, adapter contracts, backup/restore runbooks, and security decisions in this directory as those integrations are implemented.
+The dashboard uses authenticated same-origin REST and SSE. Its services own only dashboard account/session/history/audit state. Minecraft paths remain read-only; no Docker socket or host shell is exposed.

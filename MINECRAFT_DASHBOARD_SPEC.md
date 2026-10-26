@@ -1,4 +1,4 @@
-# Family Generational Minecraft Server — Dashboard Implementation Specification
+# Minecraft Server — Dashboard Implementation Specification
 
 **Status:** Implementation-ready product and visual specification  
 **Primary visual reference:** `minecraft-dashboard-reference.png` (must be provided alongside this document)  
@@ -9,7 +9,7 @@
 
 ## 1. Product purpose
 
-A web-based, Minecraft-themed control center for the existing **Family Generational Minecraft Server**. An authenticated administrator can monitor the server, view players and live logs, communicate bidirectionally with players in-game, issue RCON commands, manage backups and server lifecycle, and inspect world information. This is a real application, **not a static recreation** of the screenshot.
+A web-based, Minecraft-themed control center for the existing **Minecraft Server**. An authenticated administrator can monitor the server, view players and live logs, communicate bidirectionally with players in-game, issue RCON commands, manage backups and server lifecycle, and inspect world information. This is a real application, **not a static recreation** of the screenshot.
 
 The intended existing deployment is an `itzg/minecraft-server` Docker container on a Debian host. Preserve the existing world, player data, and configuration. Do not recreate, replace, or delete its persistent volumes as part of dashboard installation.
 
@@ -29,7 +29,7 @@ The intended existing deployment is an `itzg/minecraft-server` Docker container 
 From left to right:
 
 1. **Grass-block cube logo** at far left, visually about 80×80 px. Decorative brand mark; clicking it navigates to Overview.
-2. **Two-line title:** `FAMILY GENERATIONAL` / `MINECRAFT SERVER`. Large pale gray beveled pixel-font text with shadow. Keep exact line break on desktop.
+2. **Two-line title:** configured server display name (default `Minecraft Server`). Large pale gray beveled pixel-font text with shadow. Allow the configured name to wrap safely on small screens. The current implementation places identity in the hero rather than a separate header.
 3. **Server status inset:** green status light, uppercase `ONLINE` (or OFFLINE / STARTING / STOPPING / UNKNOWN), with a small `Java Edition <version>` subtitle. This is real status data, never hard-coded.
 4. **Right-end avatar and quote:** a Minecraft-style Steve face icon and text `Good friends build better worlds.` Decorative tagline, editable via configuration.
 5. Background: black stone masonry, dark timber, vegetation, hanging lanterns with orange glow; thick horizontal separators.
@@ -75,7 +75,7 @@ Three adjacent cards:
 
 Header: grass-block icon and uppercase `WORLD INFORMATION`. Divider underneath. Compact labeled rows with small icons, left label and right-aligned value:
 
-- **World Name** — actual level name, e.g. `family_world`.
+- **World Name** — actual level name, e.g. `my_world`.
 - **Game Mode** — Survival / Creative / Adventure / Spectator, from server config or verified query.
 - **Difficulty** — Peaceful / Easy / Normal / Hard, from config or verified query.
 - **Seed** — only if server access and authorization permit; consider masking by default, with reveal control.
@@ -392,6 +392,6 @@ Each event should carry an ID, timestamp, type, server ID and typed payload. Rec
 
 ## 12. Reference-image inventory (exact visible copy)
 
-Visible text in the supplied illustration includes: `FAMILY GENERATIONAL MINECRAFT SERVER`, `ONLINE`, `Java Edition 1.20.4`, `Good friends build better worlds.`, `Overview`, `Players`, `World`, `Console`, `Backups`, `Settings`, `WORLD ONLINE`, `Adventure continues...`, `PLAYERS ONLINE`, `TICK RATE (TPS)`, `MEMORY USAGE`, `UPTIME`, `WORLD INFORMATION`, `World Name`, `Game Mode`, `Difficulty`, `Seed`, `Dimension`, `World Size`, `Last Backup`, `WORLD TIME & WEATHER`, `QUICK ACTIONS`, `Start Server`, `Stop Server`, `Restart Server`, `Create Backup`, `View Backups`, `ONLINE PLAYERS (3)`, `View All Players (3 / 20)`, `SERVER CONSOLE`, `Live`, `Send a command...`.
+Visible text in the supplied illustration includes: `MINECRAFT SERVER`, `ONLINE`, `Java Edition 1.20.4`, `Good friends build better worlds.`, `Overview`, `Players`, `World`, `Console`, `Backups`, `Settings`, `WORLD ONLINE`, `Adventure continues...`, `PLAYERS ONLINE`, `TICK RATE (TPS)`, `MEMORY USAGE`, `UPTIME`, `WORLD INFORMATION`, `World Name`, `Game Mode`, `Difficulty`, `Seed`, `Dimension`, `World Size`, `Last Backup`, `WORLD TIME & WEATHER`, `QUICK ACTIONS`, `Start Server`, `Stop Server`, `Restart Server`, `Create Backup`, `View Backups`, `ONLINE PLAYERS (3)`, `View All Players (3 / 20)`, `SERVER CONSOLE`, `Live`, `Send a command...`.
 
 These exact labels guide visual reconstruction. Illustrated numeric values, Minecraft version, world name, player names and sample logs are **examples only** and must be dynamically populated or correctly marked unavailable.
